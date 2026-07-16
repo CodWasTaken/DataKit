@@ -71,6 +71,8 @@ pub enum Command {
     Round(RoundArgs),
     /// Hash data content
     Hash(HashArgs),
+    /// Encode data as base64 or hex
+    Encode(EncodeArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -362,6 +364,15 @@ pub struct HashArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
     /// Hash algorithm (md5)
+    #[arg(short, long)]
+    pub algorithm: Option<String>,
+}
+
+#[derive(Args)]
+pub struct EncodeArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Encoding algorithm (base64, hex)
     #[arg(short, long)]
     pub algorithm: Option<String>,
 }

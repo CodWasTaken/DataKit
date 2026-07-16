@@ -1460,3 +1460,31 @@ fn test_hash_md5() {
         .assert()
         .success();
 }
+
+#[test]
+fn test_encode_base64() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1}"#).unwrap();
+    datakit()
+        .arg("encode")
+        .arg(&file)
+        .arg("--algorithm")
+        .arg("base64")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_encode_hex() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"b":2}"#).unwrap();
+    datakit()
+        .arg("encode")
+        .arg(&file)
+        .arg("--algorithm")
+        .arg("hex")
+        .assert()
+        .success();
+}

@@ -7,6 +7,7 @@ mod convert;
 mod count;
 mod dedup;
 mod diff;
+mod encode;
 mod entries;
 mod error;
 mod explode;
@@ -77,5 +78,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Values(args) => values::run(args),
         cli::Command::Round(args) => round::run(args),
         cli::Command::Hash(args) => hash::run(args),
+        cli::Command::Encode(args) => encode::run(args),
     }
 }
