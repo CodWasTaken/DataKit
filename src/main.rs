@@ -4,6 +4,7 @@ mod cli;
 mod completions;
 mod convert;
 mod error;
+mod filter;
 mod format;
 mod inspect;
 mod query;
@@ -26,5 +27,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Query(args) => query::run(args),
         cli::Command::Completions(args) => completions::run(args.shell.into()),
         cli::Command::Stats(args) => stats::run(args),
+        cli::Command::Filter(args) => filter::run(args),
     }
 }

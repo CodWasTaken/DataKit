@@ -917,6 +917,59 @@ fn test_stats_numeric() {
 }
 
 #[test]
+fn test_filter_equals() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(
+        &file,
+        r#"[{"name":"Alice"},{"name":"Bob"},{"name":"Alice"}]"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("filter")
+        .arg(&file)
+        .arg("--condition")
+        .arg("name == Alice")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""name": "Alice""#));
+}
+
+#[test]
+fn test_filter_greater() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":1},{"x":5},{"x":3}]"#).unwrap();
+
+    datakit()
+        .arg("filter")
+        .arg(&file)
+        .arg("--condition")
+        .arg("x > 2")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""x": 5"#))
+        .stdout(predicate::str::contains(r#""x": 3"#));
+}
+
+#[test]
+fn test_filter_no_match() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":1},{"x":2}]"#).unwrap();
+
+    datakit()
+        .arg("filter")
+        .arg(&file)
+        .arg("--condition")
+        .arg("x > 10")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("[]"));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

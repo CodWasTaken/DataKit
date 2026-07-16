@@ -21,6 +21,8 @@ pub enum Command {
     Completions(CompletionsArgs),
     /// Compute summary statistics for numeric fields
     Stats(StatsArgs),
+    /// Filter records by a condition
+    Filter(FilterArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -89,4 +91,13 @@ pub struct CompletionsArgs {
 pub struct StatsArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct FilterArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Filter condition: 'field op value' (e.g. 'age > 30')
+    #[arg(short, long)]
+    pub condition: String,
 }
