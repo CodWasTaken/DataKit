@@ -44,12 +44,16 @@ pub fn run(args: InspectArgs) -> Result<(), Error> {
                 }
             }
         }
-        format::Format::Toml => {
+        format::Format::Toml | format::Format::Yaml => {
             let source: Box<dyn Read> = match args.path {
                 Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
                 None => Box::new(std::io::stdin()),
             };
-            let value: Value = format::toml::read(source)?;
+            let value: Value = if input_fmt == format::Format::Toml {
+                format::toml::read(source)?
+            } else {
+                format::yaml::read(source)?
+            };
             let info = describe_value(&value, 0);
             if !info.is_empty() {
                 println!("{info}");

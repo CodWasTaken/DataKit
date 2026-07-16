@@ -743,3 +743,77 @@ fn test_convert_toml_to_toml_roundtrip() {
     assert!(result.contains("Alice"));
     assert!(result.contains("95.5"));
 }
+
+#[test]
+fn test_inspect_yaml_file() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("config.yaml");
+    std::fs::write(&file, "name: MyApp\nversion: 1\nactive: true\n").unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("name: string"))
+        .stdout(predicate::str::contains("version: number"))
+        .stdout(predicate::str::contains("active: boolean"));
+}
+
+#[test]
+fn test_convert_yaml_to_json() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.yaml");
+    let output = dir.path().join("data.json");
+    std::fs::write(&input, "x: 10\ny: hello\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(parsed, serde_json::json!({"x": 10, "y": "hello"}));
+}
+
+#[test]
+fn test_convert_json_to_yaml() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.yaml");
+    std::fs::write(&input, r#"{"a":1,"b":"two"}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("a:"));
+    assert!(result.contains("1"));
+    assert!(result.contains("b:"));
+    assert!(result.contains("two"));
+}
+
+#[test]
+fn test_convert_yaml_to_yaml_roundtrip() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("input.yaml");
+    let output = dir.path().join("output.yaml");
+    std::fs::write(&input, "name: Bob\nscore: 88\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("Bob"));
+}

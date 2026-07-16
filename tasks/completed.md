@@ -1,10 +1,24 @@
 # Completed tasks
 
-## TC-006 — Add TOML format support
+## TC-007 — Add YAML format support
 
 **Completed:** 2026-07-16
 
 **Commit:** (pending)
+
+**Deliverables:**
+- YAML reader via `serde_yaml` crate
+- YAML writer via `serde_yaml` crate
+- YAML detect_format via `.yaml`/`.yml` extension
+- YAML integration in inspect and convert
+- 4 new integration tests (48 total, all passing)
+- `serde_yaml` crate dependency
+
+## TC-006 — Add TOML format support
+
+**Completed:** 2026-07-16
+
+**Commit:** a604ad9
 
 **Deliverables:**
 - TOML reader via `toml` crate (parses to `serde_json::Value`)

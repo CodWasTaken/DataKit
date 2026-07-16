@@ -1,6 +1,7 @@
 pub mod csv;
 pub mod jsonl;
 pub mod toml;
+pub mod yaml;
 
 use std::path::Path;
 
@@ -10,6 +11,7 @@ pub enum Format {
     Jsonl,
     Csv,
     Toml,
+    Yaml,
 }
 
 pub fn detect_format(path: &str) -> Format {
@@ -18,6 +20,7 @@ pub fn detect_format(path: &str) -> Format {
         Some("jsonl" | "jsonlines" | "ndjson") => Format::Jsonl,
         Some("csv") => Format::Csv,
         Some("toml") => Format::Toml,
+        Some("yaml" | "yml") => Format::Yaml,
         _ => Format::Json,
     }
 }

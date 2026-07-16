@@ -54,6 +54,15 @@ pub(crate) fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error
             };
             Ok(value)
         }
+        format::Format::Yaml => {
+            let value = if path == "-" {
+                format::yaml::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::yaml::read(file)?
+            };
+            Ok(value)
+        }
     }
 }
 
@@ -103,6 +112,14 @@ fn write_output(value: &Value, path: Option<&str>, fmt: format::Format) -> Resul
             let content = || -> Result<Vec<u8>, Error> {
                 let mut buf = Vec::new();
                 format::toml::write(&mut buf, value)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
+        }
+        format::Format::Yaml => {
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::yaml::write(&mut buf, value)?;
                 Ok(buf)
             };
             write_bytes(content()?, path)

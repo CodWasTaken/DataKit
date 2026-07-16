@@ -16,7 +16,7 @@ A production-quality command-line toolkit for inspecting, converting, validating
 | JSONL   | ✓    | ✓     |
 | CSV     | ✓    | ✓     |
 | TOML    | ✓    | ✓     |
-| YAML    | —    | —     |
+| YAML    | ✓    | ✓     |
 
 ## Getting Started
 

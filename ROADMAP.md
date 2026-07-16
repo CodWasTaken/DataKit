@@ -17,7 +17,7 @@
 - [x] JSON Lines (.jsonl) support
 - [x] CSV support
 - [x] TOML support
-- [ ] YAML support
+- [x] YAML support
 - [ ] Format auto-detection from extension
 
 ## Phase 3 — Transformation & analysis
