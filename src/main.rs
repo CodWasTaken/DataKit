@@ -6,6 +6,7 @@ mod convert;
 mod count;
 mod diff;
 mod error;
+mod fill;
 mod filter;
 mod flatten;
 mod format;
@@ -54,5 +55,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Head(args) => head::run(args),
         cli::Command::Tail(args) => tail::run(args),
         cli::Command::Reverse(args) => reverse::run(args),
+        cli::Command::Fill(args) => fill::run(args),
     }
 }

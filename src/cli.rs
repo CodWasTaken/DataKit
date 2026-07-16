@@ -49,6 +49,8 @@ pub enum Command {
     Tail(TailArgs),
     /// Reverse an array
     Reverse(ReverseArgs),
+    /// Fill null values in a field
+    Fill(FillArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -251,4 +253,16 @@ pub struct TailArgs {
 pub struct ReverseArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct FillArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field name to fill nulls in
+    #[arg(short, long)]
+    pub field: String,
+    /// Value to fill with
+    #[arg(short, long)]
+    pub value: String,
 }

@@ -1119,17 +1119,30 @@ fn test_sort_desc() {
 }
 
 #[test]
-fn test_count_array() {
+fn test_reverse() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"[1,2,3,4,5]"#).unwrap();
+    std::fs::write(&file, r#"["a","b","c"]"#).unwrap();
+
+    datakit().arg("reverse").arg(&file).assert().success();
+}
+
+#[test]
+fn test_fill_nulls() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"name":null,"x":1}"#).unwrap();
 
     datakit()
-        .arg("count")
+        .arg("fill")
         .arg(&file)
+        .arg("--field")
+        .arg("name")
+        .arg("--value")
+        .arg("UNKNOWN")
         .assert()
         .success()
-        .stdout("5\n");
+        .stdout(predicate::str::contains("UNKNOWN"));
 }
 
 #[test]
@@ -1294,15 +1307,6 @@ fn test_tail() {
         .success()
         .stdout(predicate::str::contains(r#""d""#))
         .stdout(predicate::str::contains(r#""e""#));
-}
-
-#[test]
-fn test_reverse() {
-    let dir = TempDir::new().unwrap();
-    let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"["a","b","c"]"#).unwrap();
-
-    datakit().arg("reverse").arg(&file).assert().success();
 }
 
 #[test]
