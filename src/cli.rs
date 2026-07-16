@@ -62,6 +62,12 @@ pub struct ConvertArgs {
     pub input: String,
     /// Path to the output file (writes to stdout if omitted)
     pub output: Option<String>,
+    /// Input format (auto-detected from extension if omitted)
+    #[arg(long)]
+    pub from: Option<String>,
+    /// Output format (auto-detected from extension if omitted)
+    #[arg(long)]
+    pub to: Option<String>,
     /// Indent width for JSON output (0 = minified, default 2)
     #[arg(short, long, default_value = "2")]
     pub indent: usize,

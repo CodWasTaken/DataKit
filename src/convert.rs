@@ -9,12 +9,18 @@ use crate::error::Error;
 use crate::format;
 
 pub fn run(args: ConvertArgs) -> Result<(), Error> {
-    let input_fmt = format::detect_format(&args.input);
-    let output_fmt = args
-        .output
-        .as_deref()
-        .map(format::detect_format)
-        .unwrap_or(format::Format::Json);
+    let input_fmt = match &args.from {
+        Some(f) => format::parse_format_name(f)?,
+        None => format::detect_format(&args.input),
+    };
+    let output_fmt = match &args.to {
+        Some(f) => format::parse_format_name(f)?,
+        None => args
+            .output
+            .as_deref()
+            .map(format::detect_format)
+            .unwrap_or(format::Format::Json),
+    };
     let indent = args.indent;
 
     let value = read_input(&args.input, input_fmt)?;

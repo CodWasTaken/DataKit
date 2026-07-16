@@ -14,6 +14,19 @@ pub enum Format {
     Yaml,
 }
 
+pub fn parse_format_name(name: &str) -> Result<Format, crate::error::Error> {
+    match name.to_lowercase().as_str() {
+        "json" => Ok(Format::Json),
+        "jsonl" | "jsonlines" | "ndjson" => Ok(Format::Jsonl),
+        "csv" => Ok(Format::Csv),
+        "toml" => Ok(Format::Toml),
+        "yaml" | "yml" => Ok(Format::Yaml),
+        _ => Err(crate::error::Error::Message(format!(
+            "unknown format '{name}' (supported: json, jsonl, csv, toml, yaml)"
+        ))),
+    }
+}
+
 pub fn detect_format(path: &str) -> Format {
     let p = Path::new(path);
     match p.extension().and_then(|e| e.to_str()) {

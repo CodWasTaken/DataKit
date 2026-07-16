@@ -1042,6 +1042,50 @@ fn test_diff_different() {
 }
 
 #[test]
+fn test_convert_from_to_format() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.dat");
+    let output = dir.path().join("out.dat");
+    std::fs::write(&input, "{\"a\":1,\"b\":2}").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .arg("--from")
+        .arg("json")
+        .arg("--to")
+        .arg("json")
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(parsed, serde_json::json!({"a": 1, "b": 2}));
+}
+
+#[test]
+fn test_convert_from_yaml_no_extension() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data");
+    let output = dir.path().join("output.json");
+    std::fs::write(&input, "x: 42\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .arg("--from")
+        .arg("yaml")
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(parsed, serde_json::json!({"x": 42}));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");
