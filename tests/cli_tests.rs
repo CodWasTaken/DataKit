@@ -165,7 +165,7 @@ fn test_inspect_missing_file() {
         .arg("/nonexistent/file.json")
         .assert()
         .failure()
-        .stderr(predicate::str::contains("FileNotFound"));
+        .stderr(predicate::str::contains("file not found"));
 }
 
 #[test]
@@ -179,7 +179,7 @@ fn test_convert_invalid_json() {
         .arg(&input)
         .assert()
         .failure()
-        .stderr(predicate::str::contains("Json"));
+        .stderr(predicate::str::contains("JSON error"));
 }
 
 #[test]
@@ -193,7 +193,7 @@ fn test_inspect_invalid_json() {
         .arg(&input)
         .assert()
         .failure()
-        .stderr(predicate::str::contains("Json"));
+        .stderr(predicate::str::contains("JSON error"));
 }
 
 #[test]

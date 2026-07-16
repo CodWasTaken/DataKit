@@ -8,7 +8,14 @@ mod inspect;
 mod query;
 mod validate;
 
-fn main() -> Result<(), error::Error> {
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("error: {e}");
+        std::process::exit(1);
+    }
+}
+
+fn run() -> Result<(), error::Error> {
     let cli = cli::Cli::parse();
     match cli.command {
         cli::Command::Inspect(args) => inspect::run(args),
