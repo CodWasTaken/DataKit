@@ -6,6 +6,7 @@ mod convert;
 mod count;
 mod diff;
 mod error;
+mod explode;
 mod fill;
 mod filter;
 mod flatten;
@@ -56,5 +57,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Tail(args) => tail::run(args),
         cli::Command::Reverse(args) => reverse::run(args),
         cli::Command::Fill(args) => fill::run(args),
+        cli::Command::Explode(args) => explode::run(args),
     }
 }

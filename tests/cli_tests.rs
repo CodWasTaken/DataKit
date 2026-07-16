@@ -1146,6 +1146,25 @@ fn test_fill_nulls() {
 }
 
 #[test]
+fn test_explode_array_field() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(
+        &file,
+        r#"[{"id":1,"items":["a","b"]},{"id":2,"items":["c"]}]"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("explode")
+        .arg(&file)
+        .arg("--field")
+        .arg("items")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_count_object() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.json");

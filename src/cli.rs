@@ -51,6 +51,8 @@ pub enum Command {
     Reverse(ReverseArgs),
     /// Fill null values in a field
     Fill(FillArgs),
+    /// Explode array field into multiple records
+    Explode(ExplodeArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -265,4 +267,13 @@ pub struct FillArgs {
     /// Value to fill with
     #[arg(short, long)]
     pub value: String,
+}
+
+#[derive(Args)]
+pub struct ExplodeArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Array field to explode
+    #[arg(short, long)]
+    pub field: String,
 }
