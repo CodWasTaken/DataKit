@@ -4,6 +4,8 @@ use std::io::{self, Read};
 use serde::Serialize;
 use serde_json::Value;
 
+use crate::atomic;
+
 use crate::cli::ConvertArgs;
 use crate::error::Error;
 use crate::format;
@@ -152,15 +154,7 @@ fn write_output(
 }
 
 fn write_bytes(bytes: Vec<u8>, path: Option<&str>) -> Result<(), Error> {
-    match path {
-        Some(p) => fs::write(p, &bytes)?,
-        None => {
-            let text = String::from_utf8(bytes)
-                .map_err(|e| Error::Message(format!("UTF-8 error: {e}")))?;
-            print!("{text}");
-        }
-    }
-    Ok(())
+    atomic::write_output(bytes, path)
 }
 
 fn read_all(path: &str) -> Result<String, Error> {

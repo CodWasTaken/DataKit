@@ -1,5 +1,6 @@
 use clap::Parser;
 
+mod atomic;
 mod cli;
 mod completions;
 mod convert;
@@ -13,6 +14,7 @@ mod fill;
 mod filter;
 mod flatten;
 mod format;
+mod hash;
 mod head;
 mod inspect;
 mod keys;
@@ -74,5 +76,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Keys(args) => keys::run(args),
         cli::Command::Values(args) => values::run(args),
         cli::Command::Round(args) => round::run(args),
+        cli::Command::Hash(args) => hash::run(args),
     }
 }

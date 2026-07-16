@@ -69,6 +69,8 @@ pub enum Command {
     Values(ValuesArgs),
     /// Round numbers to a given precision
     Round(RoundArgs),
+    /// Hash data content
+    Hash(HashArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -353,4 +355,13 @@ pub struct RoundArgs {
     /// Number of decimal places
     #[arg(short, long)]
     pub decimals: Option<u32>,
+}
+
+#[derive(Args)]
+pub struct HashArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Hash algorithm (md5)
+    #[arg(short, long)]
+    pub algorithm: Option<String>,
 }

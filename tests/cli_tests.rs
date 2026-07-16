@@ -1446,3 +1446,17 @@ fn test_round() {
         .success()
         .stdout(predicate::str::contains("3.14"));
 }
+
+#[test]
+fn test_hash_md5() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1}"#).unwrap();
+    datakit()
+        .arg("hash")
+        .arg(&file)
+        .arg("--algorithm")
+        .arg("md5")
+        .assert()
+        .success();
+}
