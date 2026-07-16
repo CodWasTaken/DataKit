@@ -27,6 +27,8 @@ pub enum Command {
     Select(SelectArgs),
     /// Show differences between two data files
     Diff(DiffArgs),
+    /// Sort records by a field
+    Sort(SortArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -127,4 +129,16 @@ pub struct DiffArgs {
     pub file_a: String,
     /// Second file to compare
     pub file_b: String,
+}
+
+#[derive(Args)]
+pub struct SortArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field to sort by
+    #[arg(short, long)]
+    pub by: String,
+    /// Sort in descending order
+    #[arg(short, long)]
+    pub desc: bool,
 }

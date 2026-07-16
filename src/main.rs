@@ -10,6 +10,7 @@ mod format;
 mod inspect;
 mod query;
 mod select;
+mod sort;
 mod stats;
 mod validate;
 
@@ -32,5 +33,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Filter(args) => filter::run(args),
         cli::Command::Select(args) => select::run(args),
         cli::Command::Diff(args) => diff::run(args),
+        cli::Command::Sort(args) => sort::run(args),
     }
 }

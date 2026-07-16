@@ -1086,6 +1086,39 @@ fn test_convert_from_yaml_no_extension() {
 }
 
 #[test]
+fn test_sort_asc() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":3},{"x":1},{"x":2}]"#).unwrap();
+
+    datakit()
+        .arg("sort")
+        .arg(&file)
+        .arg("--by")
+        .arg("x")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""x": 1"#));
+}
+
+#[test]
+fn test_sort_desc() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":1},{"x":3},{"x":2}]"#).unwrap();
+
+    datakit()
+        .arg("sort")
+        .arg(&file)
+        .arg("--by")
+        .arg("x")
+        .arg("--desc")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""x": 3"#));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");
