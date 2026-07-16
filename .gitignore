@@ -1,0 +1,116 @@
+# --- OS files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.iml
+.project
+.classpath
+.settings/
+.vs/
+
+# --- Dependencies ---
+node_modules/
+vendor/
+.bundle/
+jspm_packages/
+.build/
+CMakeFiles/
+cmake-build-*/
+
+# --- Build output ---
+dist/
+build/
+out/
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.obj
+*.lib
+*.pyc
+__pycache__/
+*.egg-info/
+*.egg
+*.whl
+*.jar
+*.war
+*.class
+
+# --- Environment & secrets ---
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.cert
+credentials.json
+service-account.json
+
+# --- Logs & temp ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.tmp/
+temp/
+tmp/
+
+# --- Coverage & reports ---
+coverage/
+.coverage*
+*.lcov
+.history/
+reports/
+
+# --- TypeScript / JS ---
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+.eslintcache
+.cache/
+
+# --- Python ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# --- Rust ---
+/target
+**/*.rs.bk
+
+# --- Go ---
+/bin/
+!src/**/bin/
+
+# --- Terraform ---
+*.tfstate
+*.tfstate.backup
+.terraform/
+crash.log
+
+# --- Docker ---
+.docker/
+docker-compose.override.yml
+
+# --- misc ---
+*.orig
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs_vista.db
