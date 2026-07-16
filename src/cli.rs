@@ -39,6 +39,8 @@ pub enum Command {
     Flatten(FlattenArgs),
     /// Extract a slice of array records
     Slice(SliceArgs),
+    /// Random sample of records
+    Sample(SampleArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -196,4 +198,16 @@ pub struct SliceArgs {
     /// End index (exclusive)
     #[arg(short, long)]
     pub end: Option<usize>,
+}
+
+#[derive(Args)]
+pub struct SampleArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Number of records to sample
+    #[arg(short, long, default_value = "1")]
+    pub count: Option<usize>,
+    /// Random seed for reproducibility
+    #[arg(short, long, default_value = "42")]
+    pub seed: Option<u64>,
 }

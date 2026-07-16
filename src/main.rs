@@ -12,6 +12,7 @@ mod format;
 mod inspect;
 mod query;
 mod rename;
+mod sample;
 mod select;
 mod slice;
 mod sort;
@@ -44,5 +45,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Unique(args) => unique::run(args),
         cli::Command::Flatten(args) => flatten::run(args),
         cli::Command::Slice(args) => slice::run(args),
+        cli::Command::Sample(args) => sample::run(args),
     }
 }

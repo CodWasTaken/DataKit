@@ -1231,6 +1231,23 @@ fn test_slice_out_of_range() {
 }
 
 #[test]
+fn test_sample_count() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[1,2,3,4,5,6,7,8,9,10]"#).unwrap();
+
+    datakit()
+        .arg("sample")
+        .arg(&file)
+        .arg("--count")
+        .arg("3")
+        .arg("--seed")
+        .arg("42")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");
