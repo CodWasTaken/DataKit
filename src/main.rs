@@ -7,6 +7,7 @@ mod count;
 mod diff;
 mod error;
 mod filter;
+mod flatten;
 mod format;
 mod inspect;
 mod query;
@@ -40,5 +41,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Count(args) => count::run(args),
         cli::Command::Rename(args) => rename::run(args),
         cli::Command::Unique(args) => unique::run(args),
+        cli::Command::Flatten(args) => flatten::run(args),
     }
 }

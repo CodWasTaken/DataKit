@@ -1181,6 +1181,21 @@ fn test_unique_field() {
 }
 
 #[test]
+fn test_flatten_object() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":{"b":{"c":1}},"d":2}"#).unwrap();
+
+    datakit()
+        .arg("flatten")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("a.b.c"))
+        .stdout(predicate::str::contains("d"));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

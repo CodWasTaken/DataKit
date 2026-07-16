@@ -35,6 +35,8 @@ pub enum Command {
     Rename(RenameArgs),
     /// List unique values of a field
     Unique(UniqueArgs),
+    /// Flatten nested objects
+    Flatten(FlattenArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -171,4 +173,13 @@ pub struct UniqueArgs {
     /// Field to find unique values for
     #[arg(short, long)]
     pub field: String,
+}
+
+#[derive(Args)]
+pub struct FlattenArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Separator between nested keys (default ".")
+    #[arg(short, long, default_value = ".")]
+    pub sep: Option<String>,
 }
