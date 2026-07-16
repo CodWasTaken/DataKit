@@ -1248,6 +1248,21 @@ fn test_sample_count() {
 }
 
 #[test]
+fn test_shuffle_deterministic() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"v":1},{"v":2},{"v":3}]"#).unwrap();
+
+    datakit()
+        .arg("shuffle")
+        .arg(&file)
+        .arg("--seed")
+        .arg("42")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

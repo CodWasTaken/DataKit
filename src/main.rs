@@ -14,6 +14,7 @@ mod query;
 mod rename;
 mod sample;
 mod select;
+mod shuffle;
 mod slice;
 mod sort;
 mod stats;
@@ -46,5 +47,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Flatten(args) => flatten::run(args),
         cli::Command::Slice(args) => slice::run(args),
         cli::Command::Sample(args) => sample::run(args),
+        cli::Command::Shuffle(args) => shuffle::run(args),
     }
 }

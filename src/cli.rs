@@ -41,6 +41,8 @@ pub enum Command {
     Slice(SliceArgs),
     /// Random sample of records
     Sample(SampleArgs),
+    /// Shuffle array records randomly
+    Shuffle(ShuffleArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -205,9 +207,18 @@ pub struct SampleArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
     /// Number of records to sample
-    #[arg(short, long, default_value = "1")]
+    #[arg(short, long)]
     pub count: Option<usize>,
     /// Random seed for reproducibility
-    #[arg(short, long, default_value = "42")]
+    #[arg(short, long)]
+    pub seed: Option<u64>,
+}
+
+#[derive(Args)]
+pub struct ShuffleArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Random seed for reproducibility
+    #[arg(short, long)]
     pub seed: Option<u64>,
 }
