@@ -57,6 +57,12 @@ pub enum Command {
     Dedup(DedupArgs),
     /// Convert object to key-value entries
     Entries(EntriesArgs),
+    /// Merge two data files
+    Merge(MergeArgs),
+    /// Pick a random record
+    Pick(PickArgs),
+    /// Zip two arrays together
+    Zip(ZipArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -295,4 +301,29 @@ pub struct DedupArgs {
 pub struct EntriesArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct MergeArgs {
+    /// First data file
+    pub file_a: String,
+    /// Second data file
+    pub file_b: String,
+}
+
+#[derive(Args)]
+pub struct PickArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Random seed for reproducibility
+    #[arg(short, long)]
+    pub seed: Option<u64>,
+}
+
+#[derive(Args)]
+pub struct ZipArgs {
+    /// First array file
+    pub file_a: String,
+    /// Second array file
+    pub file_b: String,
 }

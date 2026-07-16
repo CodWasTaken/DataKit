@@ -15,6 +15,8 @@ mod flatten;
 mod format;
 mod head;
 mod inspect;
+mod merge;
+mod pick;
 mod query;
 mod rename;
 mod reverse;
@@ -27,6 +29,7 @@ mod stats;
 mod tail;
 mod unique;
 mod validate;
+mod zip;
 
 fn main() {
     if let Err(e) = run() {
@@ -62,5 +65,8 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Explode(args) => explode::run(args),
         cli::Command::Dedup(args) => dedup::run(args),
         cli::Command::Entries(args) => entries::run(args),
+        cli::Command::Merge(args) => merge::run(args),
+        cli::Command::Pick(args) => pick::run(args),
+        cli::Command::Zip(args) => zip::run(args),
     }
 }

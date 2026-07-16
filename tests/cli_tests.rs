@@ -1367,3 +1367,51 @@ fn test_stats_non_numeric() {
         .success()
         .stdout(predicate::str::contains("non-numeric"));
 }
+
+#[test]
+fn test_merge_objects() {
+    let dir = TempDir::new().unwrap();
+    let a = dir.path().join("a.json");
+    let b = dir.path().join("b.json");
+    std::fs::write(&a, r#"{"x":1}"#).unwrap();
+    std::fs::write(&b, r#"{"y":2}"#).unwrap();
+
+    datakit().arg("merge").arg(&a).arg(&b).assert().success();
+}
+
+#[test]
+fn test_merge_arrays() {
+    let dir = TempDir::new().unwrap();
+    let a = dir.path().join("a.json");
+    let b = dir.path().join("b.json");
+    std::fs::write(&a, r#"["a","b"]"#).unwrap();
+    std::fs::write(&b, r#"["c","d"]"#).unwrap();
+
+    datakit().arg("merge").arg(&a).arg(&b).assert().success();
+}
+
+#[test]
+fn test_pick() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a","b","c"]"#).unwrap();
+
+    datakit()
+        .arg("pick")
+        .arg(&file)
+        .arg("--seed")
+        .arg("42")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_zip() {
+    let dir = TempDir::new().unwrap();
+    let a = dir.path().join("a.json");
+    let b = dir.path().join("b.json");
+    std::fs::write(&a, r#"["a","b"]"#).unwrap();
+    std::fs::write(&b, r#"[1,2]"#).unwrap();
+
+    datakit().arg("zip").arg(&a).arg(&b).assert().success();
+}
