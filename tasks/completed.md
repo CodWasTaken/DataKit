@@ -1,10 +1,23 @@
 # Completed tasks
 
-## TC-004 — Add JSON Schema validation command
+## TC-005 — Add query command for field path extraction
 
 **Completed:** 2026-07-16
 
 **Commit:** (pending)
+
+**Deliverables:**
+- New `query` subcommand with `--path` option
+- Dot-separated path syntax: `field`, `field.subfield`, `field[0]`, `field[0].sub`
+- Works with any supported input format (JSON, JSONL, CSV)
+- Clear error messages for missing keys, out-of-bounds indices, type mismatches
+- 6 new integration tests (40 total, all passing)
+
+## TC-004 — Add JSON Schema validation command
+
+**Completed:** 2026-07-16
+
+**Commit:** 182364c
 
 **Deliverables:**
 - New `validate` subcommand with `--schema` flag

@@ -62,6 +62,10 @@ datakit inspect data.csv
 # Validate data against a JSON Schema
 datakit validate data.json --schema schema.json
 
+# Query a field from data
+datakit query data.json --path "user.name"
+datakit query data.json --path "items[0].id"
+
 # Convert from stdin to stdout
 echo '{"hello":"world"}' | datakit convert -
 ```

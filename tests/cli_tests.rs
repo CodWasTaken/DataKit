@@ -574,3 +574,93 @@ fn test_validate_help() {
         .success()
         .stdout(predicate::str::contains("Validate data"));
 }
+
+#[test]
+fn test_query_simple_field() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"name":"Alice","age":30}"#).unwrap();
+
+    datakit()
+        .arg("query")
+        .arg(&file)
+        .arg("--path")
+        .arg("name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Alice"));
+}
+
+#[test]
+fn test_query_nested_field() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"user":{"name":"Bob","scores":[1,2,3]}}"#).unwrap();
+
+    datakit()
+        .arg("query")
+        .arg(&file)
+        .arg("--path")
+        .arg("user.name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Bob"));
+}
+
+#[test]
+fn test_query_array_index() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"items":[10,20,30]}"#).unwrap();
+
+    datakit()
+        .arg("query")
+        .arg(&file)
+        .arg("--path")
+        .arg("items[1]")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("20"));
+}
+
+#[test]
+fn test_query_nested_array_and_object() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"users":[{"name":"Alice"},{"name":"Bob"}]}"#).unwrap();
+
+    datakit()
+        .arg("query")
+        .arg(&file)
+        .arg("--path")
+        .arg("users[0].name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Alice"));
+}
+
+#[test]
+fn test_query_missing_key() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1}"#).unwrap();
+
+    datakit()
+        .arg("query")
+        .arg(&file)
+        .arg("--path")
+        .arg("b")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("not found"));
+}
+
+#[test]
+fn test_query_help() {
+    datakit()
+        .arg("query")
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Query a field path"));
+}

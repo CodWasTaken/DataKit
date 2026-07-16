@@ -18,6 +18,7 @@ src/
   inspect.rs   — Inspect command: schema summary
   convert.rs   — Convert command: format transformation
   validate.rs  — Validate command: JSON Schema validation
+  query.rs     — Query command: field path extraction
   format/
     mod.rs     — Format detection, Format enum
     jsonl.rs   — JSON Lines reader/writer
