@@ -10,41 +10,70 @@ use crate::error::Error;
 use crate::format;
 
 pub fn run(args: InspectArgs) -> Result<(), Error> {
-    let is_jsonl = args
+    let input_fmt = args
         .path
         .as_deref()
         .map(format::detect_format)
-        .map(|f| f == format::Format::Jsonl)
-        .unwrap_or(false);
+        .unwrap_or(format::Format::Json);
 
-    if is_jsonl {
-        let source: Box<dyn Read> = match args.path {
-            Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
-            None => Box::new(std::io::stdin()),
-        };
-        let records = format::jsonl::read(source)?;
-        let count = records.len();
-        println!("jsonl records: {count}");
-        if let Some(first) = records.first() {
-            let info = describe_value(first, 0);
-            println!("record schema:");
-            for line in info.lines() {
-                println!("  {line}");
+    match input_fmt {
+        format::Format::Jsonl => {
+            let records = read_jsonl_records(&args.path)?;
+            let count = records.len();
+            println!("jsonl records: {count}");
+            if let Some(first) = records.first() {
+                println!("record schema:");
+                for line in describe_value(first, 0).lines() {
+                    println!("  {line}");
+                }
             }
         }
-        return Ok(());
+        format::Format::Csv => {
+            let records = read_csv_records(&args.path)?;
+            let count = records.len();
+            println!("csv rows: {count}");
+            if let Some(first) = records.first() {
+                let fields = match first {
+                    Value::Object(m) => m,
+                    _ => return Ok(()),
+                };
+                println!("columns:");
+                for (k, v) in fields {
+                    let val_type = describe_value(v, 0);
+                    println!("  {k}: {val_type}");
+                }
+            }
+        }
+        format::Format::Json => {
+            let source: Box<dyn Read> = match args.path {
+                Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
+                None => Box::new(std::io::stdin()),
+            };
+            let value: Value = serde_json::from_reader(source)?;
+            let info = describe_value(&value, 0);
+            if !info.is_empty() {
+                println!("{info}");
+            }
+        }
     }
 
-    let source: Box<dyn Read> = match args.path {
+    Ok(())
+}
+
+fn read_jsonl_records(path: &Option<String>) -> Result<Vec<Value>, Error> {
+    let source: Box<dyn Read> = match path {
         Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
         None => Box::new(std::io::stdin()),
     };
-    let value: Value = serde_json::from_reader(source)?;
-    let info = describe_value(&value, 0);
-    if !info.is_empty() {
-        println!("{info}");
-    }
-    Ok(())
+    format::jsonl::read(source)
+}
+
+fn read_csv_records(path: &Option<String>) -> Result<Vec<Value>, Error> {
+    let source: Box<dyn Read> = match path {
+        Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
+        None => Box::new(std::io::stdin()),
+    };
+    format::csv::read(source)
 }
 
 fn describe_value(v: &Value, depth: usize) -> String {

@@ -20,6 +20,7 @@ src/
   format/
     mod.rs     — Format detection, Format enum
     jsonl.rs   — JSON Lines reader/writer
+    csv.rs     — CSV reader/writer
 ```
 
 ## CLI design

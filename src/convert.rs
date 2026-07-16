@@ -15,36 +15,93 @@ pub fn run(args: ConvertArgs) -> Result<(), Error> {
         .map(format::detect_format)
         .unwrap_or(format::Format::Json);
 
-    match (input_fmt, output_fmt) {
-        (format::Format::Jsonl, format::Format::Jsonl) => {
-            let records = read_jsonl(&args.input)?;
-            write_jsonl_stdout_or_file(&records, args.output.as_deref())?;
+    let value = read_input(&args.input, input_fmt)?;
+    write_output(&value, args.output.as_deref(), output_fmt)?;
+
+    Ok(())
+}
+
+fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error> {
+    match fmt {
+        format::Format::Json => {
+            let text = read_all(path)?;
+            Ok(serde_json::from_str(&text)?)
         }
-        (format::Format::Jsonl, format::Format::Json) => {
-            let records = read_jsonl(&args.input)?;
-            let value = Value::Array(records);
-            write_json_stdout_or_file(&value, args.output.as_deref())?;
+        format::Format::Jsonl => {
+            let records = if path == "-" {
+                format::jsonl::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::jsonl::read(file)?
+            };
+            Ok(Value::Array(records))
         }
-        (format::Format::Json, format::Format::Jsonl) => {
-            let input = read_all(&args.input)?;
-            let value: Value = serde_json::from_str(&input)?;
+        format::Format::Csv => {
+            let records = if path == "-" {
+                format::csv::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::csv::read(file)?
+            };
+            Ok(Value::Array(records))
+        }
+    }
+}
+
+fn write_output(value: &Value, path: Option<&str>, fmt: format::Format) -> Result<(), Error> {
+    match fmt {
+        format::Format::Json => {
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                serde_json::to_writer_pretty(&mut buf, value)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
+        }
+        format::Format::Jsonl => {
             let records = match value {
-                Value::Array(arr) => arr,
+                Value::Array(arr) => arr.clone(),
                 _ => {
                     return Err(Error::Message(
-                        "converting JSON to JSONL requires a top-level array".to_string(),
+                        "converting to JSONL requires a top-level array".to_string(),
                     ));
                 }
             };
-            write_jsonl_stdout_or_file(&records, args.output.as_deref())?;
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::jsonl::write(&mut buf, &records)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
         }
-        (format::Format::Json, format::Format::Json) => {
-            let input = read_all(&args.input)?;
-            let value: Value = serde_json::from_str(&input)?;
-            write_json_stdout_or_file(&value, args.output.as_deref())?;
+        format::Format::Csv => {
+            let records = match value {
+                Value::Array(arr) => arr.clone(),
+                _ => {
+                    return Err(Error::Message(
+                        "converting to CSV requires a top-level array".to_string(),
+                    ));
+                }
+            };
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::csv::write(&mut buf, &records)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
         }
     }
+}
 
+fn write_bytes(bytes: Vec<u8>, path: Option<&str>) -> Result<(), Error> {
+    match path {
+        Some(p) => fs::write(p, &bytes)?,
+        None => {
+            let text = String::from_utf8(bytes)
+                .map_err(|e| Error::Message(format!("UTF-8 error: {e}")))?;
+            print!("{text}");
+        }
+    }
     Ok(())
 }
 
@@ -56,47 +113,4 @@ fn read_all(path: &str) -> Result<String, Error> {
     } else {
         Ok(fs::read_to_string(path)?)
     }
-}
-
-fn read_jsonl(path: &str) -> Result<Vec<Value>, Error> {
-    if path == "-" {
-        format::jsonl::read(io::stdin())
-    } else {
-        let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
-        format::jsonl::read(file)
-    }
-}
-
-fn write_jsonl_stdout_or_file(values: &[Value], output: Option<&str>) -> Result<(), Error> {
-    match output {
-        Some(path) => {
-            let file = fs::File::create(path)?;
-            format::jsonl::write(file, values)
-        }
-        None => {
-            let mut buf: Vec<u8> = Vec::new();
-            format::jsonl::write(&mut buf, values)?;
-            let text =
-                String::from_utf8(buf).map_err(|e| Error::Message(format!("UTF-8 error: {e}")))?;
-            print!("{text}");
-            Ok(())
-        }
-    }
-}
-
-fn write_json_stdout_or_file(value: &Value, output: Option<&str>) -> Result<(), Error> {
-    match output {
-        Some(path) => {
-            let file = fs::File::create(path)?;
-            serde_json::to_writer_pretty(file, value)?;
-        }
-        None => {
-            let mut buf: Vec<u8> = Vec::new();
-            serde_json::to_writer_pretty(&mut buf, value)?;
-            let text =
-                String::from_utf8(buf).map_err(|e| Error::Message(format!("UTF-8 error: {e}")))?;
-            println!("{text}");
-        }
-    }
-    Ok(())
 }

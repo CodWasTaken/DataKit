@@ -14,7 +14,7 @@ A production-quality command-line toolkit for inspecting, converting, validating
 |---------|------|-------|
 | JSON    | ✓    | ✓     |
 | JSONL   | ✓    | ✓     |
-| CSV     | —    | —     |
+| CSV     | ✓    | ✓     |
 | TOML    | —    | —     |
 | YAML    | —    | —     |
 
@@ -49,6 +49,15 @@ datakit convert data.jsonl data.json
 
 # Convert JSON array to JSONL
 datakit convert data.json data.jsonl
+
+# Convert CSV to JSON
+datakit convert data.csv data.json
+
+# Convert JSON array to CSV
+datakit convert data.json data.csv
+
+# Inspect a CSV file
+datakit inspect data.csv
 
 # Convert from stdin to stdout
 echo '{"hello":"world"}' | datakit convert -

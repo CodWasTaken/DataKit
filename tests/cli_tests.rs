@@ -345,6 +345,134 @@ invalid json
 }
 
 #[test]
+fn test_inspect_csv_file() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.csv");
+    std::fs::write(&file, "name,age,active\nAlice,30,true\nBob,25,false\n").unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("csv rows: 2"))
+        .stdout(predicate::str::contains("name: string"))
+        .stdout(predicate::str::contains("age: number"))
+        .stdout(predicate::str::contains("active: boolean"));
+}
+
+#[test]
+fn test_inspect_csv_empty() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("empty.csv");
+    std::fs::write(&file, "a,b,c\n").unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("csv rows: 0"));
+}
+
+#[test]
+fn test_convert_csv_to_json() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.csv");
+    let output = dir.path().join("data.json");
+    std::fs::write(&input, "x,y\n1,2\n3,4\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(
+        parsed,
+        serde_json::json!([{"x": 1, "y": 2}, {"x": 3, "y": 4}])
+    );
+}
+
+#[test]
+fn test_convert_json_to_csv() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.csv");
+    std::fs::write(&input, r#"[{"a":1,"b":"x"},{"a":2,"b":"y"}]"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("a,b"));
+    assert!(result.contains("1,x"));
+    assert!(result.contains("2,y"));
+}
+
+#[test]
+fn test_convert_csv_to_jsonl() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.csv");
+    let output = dir.path().join("data.jsonl");
+    std::fs::write(&input, "v\n10\n20\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let lines: Vec<&str> = result.lines().collect();
+    assert_eq!(lines.len(), 2);
+    assert_eq!(lines[0], r#"{"v":10}"#);
+    assert_eq!(lines[1], r#"{"v":20}"#);
+}
+
+#[test]
+fn test_convert_json_to_csv_non_array() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.csv");
+    std::fs::write(&input, r#"42"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("requires a top-level array"));
+}
+
+#[test]
+fn test_convert_csv_to_csv_roundtrip() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("input.csv");
+    let output = dir.path().join("output.csv");
+    std::fs::write(&input, "name,score\nAlice,95\nBob,87\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert_eq!(result, "name,score\nAlice,95\nBob,87\n");
+}
+
+#[test]
 fn test_help_available() {
     datakit()
         .arg("--help")

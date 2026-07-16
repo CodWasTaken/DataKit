@@ -1,10 +1,25 @@
 # Completed tasks
 
-## TC-002 — Add JSON Lines (.jsonl) format support
+## TC-003 — Add CSV format support
 
 **Completed:** 2026-07-16
 
 **Commit:** (pending)
+
+**Deliverables:**
+- CSV reader with header-based object mapping
+- CSV writer with automatic header collection
+- Type inference for CSV values (number, boolean, null, string)
+- CSV-inspect (row count, column types)
+- Full conversion matrix (CSV ↔ JSON, CSV ↔ JSONL, CSV ↔ CSV roundtrip)
+- 7 new integration tests (30 total, all passing)
+- `csv` crate dependency
+
+## TC-002 — Add JSON Lines (.jsonl) format support
+
+**Completed:** 2026-07-16
+
+**Commit:** eb26c1e
 
 **Deliverables:**
 - Format detection via `.jsonl` extension

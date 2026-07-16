@@ -2,7 +2,6 @@
 
 | ID | Priority | Title | Type |
 |----|----------|-------|------|
-| TB-002 | high | Add CSV format support | feat |
 | TB-003 | high | Add `validate` command for JSON Schema | feat |
 | TB-004 | medium | Add `query` command with field path extraction | feat |
 | TB-005 | medium | Add TOML format support | feat |
