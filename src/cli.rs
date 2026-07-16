@@ -77,6 +77,10 @@ pub enum Command {
     Pretty(PrettyArgs),
     /// Check if a file is valid
     Check(CheckArgs),
+    /// Search text in records
+    Search(SearchArgs),
+    /// Get length of array, string, or object
+    Length(LengthArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -392,6 +396,24 @@ pub struct PrettyArgs {
 
 #[derive(Args)]
 pub struct CheckArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+}
+
+#[derive(Args)]
+pub struct SearchArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Text to search for
+    #[arg(short, long)]
+    pub query: String,
+    /// Field to search in (optional)
+    #[arg(short, long)]
+    pub field: Option<String>,
+}
+
+#[derive(Args)]
+pub struct LengthArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
 }

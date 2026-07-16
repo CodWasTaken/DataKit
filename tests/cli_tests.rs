@@ -1528,3 +1528,33 @@ fn test_check_invalid() {
         .failure()
         .stderr(predicate::str::contains("invalid"));
 }
+
+#[test]
+fn test_search() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"name":"Alice"},{"name":"Bob"}]"#).unwrap();
+    datakit()
+        .arg("search")
+        .arg(&file)
+        .arg("--query")
+        .arg("ice")
+        .arg("--field")
+        .arg("name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Alice"));
+}
+
+#[test]
+fn test_length_array() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[1,2,3]"#).unwrap();
+    datakit()
+        .arg("length")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout("3\n");
+}

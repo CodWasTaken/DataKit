@@ -20,6 +20,7 @@ mod hash;
 mod head;
 mod inspect;
 mod keys;
+mod length;
 mod merge;
 mod pick;
 mod pretty;
@@ -28,6 +29,7 @@ mod rename;
 mod reverse;
 mod round;
 mod sample;
+mod search;
 mod select;
 mod shuffle;
 mod slice;
@@ -83,5 +85,7 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Encode(args) => encode::run(args),
         cli::Command::Pretty(args) => pretty::run(args),
         cli::Command::Check(args) => check::run(args),
+        cli::Command::Search(args) => search::run(args),
+        cli::Command::Length(args) => length::run(args),
     }
 }
