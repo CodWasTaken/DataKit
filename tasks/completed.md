@@ -1,10 +1,35 @@
 # Completed tasks
 
-## TC-007 — Add YAML format support
+## TC-008 — Improve error message formatting (Display instead of Debug)
 
 **Completed:** 2026-07-16
 
-**Commit:** (pending)
+**Commit:** d6e883c
+
+**Deliverables:**
+- Error messages now use `Display` format instead of `Debug` format
+- `error: file not found: /path` instead of `Error: FileNotFound("/path")`
+- `error: JSON error: ...` instead of `Error: Json(...)`
+- Minimal change: main() now wraps run() and prints errors with `{e}`
+
+## TC-007 — Add --indent option for JSON output
+
+**Completed:** 2026-07-16
+
+**Commit:** b6e452e
+
+**Deliverables:**
+- `--indent <N>` option on `convert` command (default: 2)
+- `--indent 0` for minified JSON output
+- Custom indent widths via `PrettyFormatter::with_indent`
+- 2 new integration tests (50 total, all passing)
+- Known issue removed from memory/known_issues.md
+
+## TC-006 — Add YAML format support
+
+**Completed:** 2026-07-16
+
+**Commit:** e85bf01
 
 **Deliverables:**
 - YAML reader via `serde_yaml` crate
@@ -13,20 +38,6 @@
 - YAML integration in inspect and convert
 - 4 new integration tests (48 total, all passing)
 - `serde_yaml` crate dependency
-
-## TC-006 — Add TOML format support
-
-**Completed:** 2026-07-16
-
-**Commit:** a604ad9
-
-**Deliverables:**
-- TOML reader via `toml` crate (parses to `serde_json::Value`)
-- TOML writer (requires top-level object)
-- TOML detect_format via `.toml` extension
-- TOML integration in inspect and convert
-- 4 new integration tests (44 total, all passing)
-- `toml` crate dependency
 
 ## TC-005 — Add query command for field path extraction
 
