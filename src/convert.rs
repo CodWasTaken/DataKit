@@ -1,6 +1,7 @@
 use std::fs;
 use std::io::{self, Read};
 
+use serde::Serialize;
 use serde_json::Value;
 
 use crate::cli::ConvertArgs;
@@ -14,9 +15,10 @@ pub fn run(args: ConvertArgs) -> Result<(), Error> {
         .as_deref()
         .map(format::detect_format)
         .unwrap_or(format::Format::Json);
+    let indent = args.indent;
 
     let value = read_input(&args.input, input_fmt)?;
-    write_output(&value, args.output.as_deref(), output_fmt)?;
+    write_output(&value, args.output.as_deref(), output_fmt, indent)?;
 
     Ok(())
 }
@@ -66,12 +68,28 @@ pub(crate) fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error
     }
 }
 
-fn write_output(value: &Value, path: Option<&str>, fmt: format::Format) -> Result<(), Error> {
+fn write_output(
+    value: &Value,
+    path: Option<&str>,
+    fmt: format::Format,
+    indent: usize,
+) -> Result<(), Error> {
     match fmt {
         format::Format::Json => {
             let content = || -> Result<Vec<u8>, Error> {
                 let mut buf = Vec::new();
-                serde_json::to_writer_pretty(&mut buf, value)?;
+                if indent == 0 {
+                    serde_json::to_writer(&mut buf, value)?;
+                } else if indent == 2 {
+                    serde_json::to_writer_pretty(&mut buf, value)?;
+                } else {
+                    use serde_json::ser::PrettyFormatter;
+                    use serde_json::ser::Serializer;
+                    let indent_bytes = vec![b' '; indent];
+                    let fmt = PrettyFormatter::with_indent(&indent_bytes);
+                    let mut ser = Serializer::with_formatter(&mut buf, fmt);
+                    value.serialize(&mut ser)?;
+                }
                 Ok(buf)
             };
             write_bytes(content()?, path)

@@ -817,3 +817,43 @@ fn test_convert_yaml_to_yaml_roundtrip() {
     let result = std::fs::read_to_string(&output).unwrap();
     assert!(result.contains("Bob"));
 }
+
+#[test]
+fn test_convert_indent_4() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("out.json");
+    std::fs::write(&input, r#"{"a":1,"b":2}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .arg("--indent")
+        .arg("4")
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert_eq!(result, "{\n    \"a\": 1,\n    \"b\": 2\n}");
+}
+
+#[test]
+fn test_convert_indent_0_minified() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("out.json");
+    std::fs::write(&input, r#"{"a":1,"b":2}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .arg("--indent")
+        .arg("0")
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert_eq!(result.trim(), r#"{"a":1,"b":2}"#);
+}
