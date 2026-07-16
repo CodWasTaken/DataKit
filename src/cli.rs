@@ -63,6 +63,12 @@ pub enum Command {
     Pick(PickArgs),
     /// Zip two arrays together
     Zip(ZipArgs),
+    /// List keys of an object
+    Keys(KeysArgs),
+    /// List values of an object
+    Values(ValuesArgs),
+    /// Round numbers to a given precision
+    Round(RoundArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -326,4 +332,25 @@ pub struct ZipArgs {
     pub file_a: String,
     /// Second array file
     pub file_b: String,
+}
+
+#[derive(Args)]
+pub struct KeysArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+}
+
+#[derive(Args)]
+pub struct ValuesArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+}
+
+#[derive(Args)]
+pub struct RoundArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Number of decimal places
+    #[arg(short, long)]
+    pub decimals: Option<u32>,
 }

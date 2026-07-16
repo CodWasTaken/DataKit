@@ -1415,3 +1415,34 @@ fn test_zip() {
 
     datakit().arg("zip").arg(&a).arg(&b).assert().success();
 }
+
+#[test]
+fn test_keys() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"b":2,"a":1}"#).unwrap();
+    datakit().arg("keys").arg(&file).assert().success();
+}
+
+#[test]
+fn test_values() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"x":42,"y":"hello"}"#).unwrap();
+    datakit().arg("values").arg(&file).assert().success();
+}
+
+#[test]
+fn test_round() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":3.14159}"#).unwrap();
+    datakit()
+        .arg("round")
+        .arg(&file)
+        .arg("--decimals")
+        .arg("2")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("3.14"));
+}

@@ -15,11 +15,13 @@ mod flatten;
 mod format;
 mod head;
 mod inspect;
+mod keys;
 mod merge;
 mod pick;
 mod query;
 mod rename;
 mod reverse;
+mod round;
 mod sample;
 mod select;
 mod shuffle;
@@ -29,6 +31,7 @@ mod stats;
 mod tail;
 mod unique;
 mod validate;
+mod values;
 mod zip;
 
 fn main() {
@@ -68,5 +71,8 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Merge(args) => merge::run(args),
         cli::Command::Pick(args) => pick::run(args),
         cli::Command::Zip(args) => zip::run(args),
+        cli::Command::Keys(args) => keys::run(args),
+        cli::Command::Values(args) => values::run(args),
+        cli::Command::Round(args) => round::run(args),
     }
 }
