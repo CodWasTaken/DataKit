@@ -1196,6 +1196,41 @@ fn test_flatten_object() {
 }
 
 #[test]
+fn test_slice_start() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a","b","c","d"]"#).unwrap();
+
+    datakit()
+        .arg("slice")
+        .arg(&file)
+        .arg("--start")
+        .arg("1")
+        .arg("--end")
+        .arg("3")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""b""#))
+        .stdout(predicate::str::contains(r#""c""#));
+}
+
+#[test]
+fn test_slice_out_of_range() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a"]"#).unwrap();
+
+    datakit()
+        .arg("slice")
+        .arg(&file)
+        .arg("--start")
+        .arg("10")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("[]"));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

@@ -37,6 +37,8 @@ pub enum Command {
     Unique(UniqueArgs),
     /// Flatten nested objects
     Flatten(FlattenArgs),
+    /// Extract a slice of array records
+    Slice(SliceArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -180,6 +182,18 @@ pub struct FlattenArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
     /// Separator between nested keys (default ".")
-    #[arg(short, long, default_value = ".")]
+    #[arg(short, long)]
     pub sep: Option<String>,
+}
+
+#[derive(Args)]
+pub struct SliceArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Start index
+    #[arg(short, long)]
+    pub start: Option<usize>,
+    /// End index (exclusive)
+    #[arg(short, long)]
+    pub end: Option<usize>,
 }

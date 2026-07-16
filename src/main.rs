@@ -13,6 +13,7 @@ mod inspect;
 mod query;
 mod rename;
 mod select;
+mod slice;
 mod sort;
 mod stats;
 mod unique;
@@ -42,5 +43,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Rename(args) => rename::run(args),
         cli::Command::Unique(args) => unique::run(args),
         cli::Command::Flatten(args) => flatten::run(args),
+        cli::Command::Slice(args) => slice::run(args),
     }
 }
