@@ -1196,20 +1196,32 @@ fn test_rename_field() {
 }
 
 #[test]
-fn test_unique_field() {
+fn test_dedup_field() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"[{"x":"a"},{"x":"b"},{"x":"a"}]"#).unwrap();
+    std::fs::write(&file, r#"[{"x":1},{"x":2},{"x":1}]"#).unwrap();
 
     datakit()
-        .arg("unique")
+        .arg("dedup")
         .arg(&file)
         .arg("--field")
         .arg("x")
         .assert()
+        .success();
+}
+
+#[test]
+fn test_entries() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1,"b":2}"#).unwrap();
+
+    datakit()
+        .arg("entries")
+        .arg(&file)
+        .assert()
         .success()
-        .stdout(predicate::str::contains("a"))
-        .stdout(predicate::str::contains("b"));
+        .stdout(predicate::str::contains(r#""key": "a""#));
 }
 
 #[test]

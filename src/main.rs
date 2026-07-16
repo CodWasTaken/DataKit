@@ -4,7 +4,9 @@ mod cli;
 mod completions;
 mod convert;
 mod count;
+mod dedup;
 mod diff;
+mod entries;
 mod error;
 mod explode;
 mod fill;
@@ -58,5 +60,7 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Reverse(args) => reverse::run(args),
         cli::Command::Fill(args) => fill::run(args),
         cli::Command::Explode(args) => explode::run(args),
+        cli::Command::Dedup(args) => dedup::run(args),
+        cli::Command::Entries(args) => entries::run(args),
     }
 }

@@ -53,6 +53,10 @@ pub enum Command {
     Fill(FillArgs),
     /// Explode array field into multiple records
     Explode(ExplodeArgs),
+    /// Remove duplicate records
+    Dedup(DedupArgs),
+    /// Convert object to key-value entries
+    Entries(EntriesArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -276,4 +280,19 @@ pub struct ExplodeArgs {
     /// Array field to explode
     #[arg(short, long)]
     pub field: String,
+}
+
+#[derive(Args)]
+pub struct DedupArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field to check for duplicates (all fields if omitted)
+    #[arg(short, long)]
+    pub field: Option<String>,
+}
+
+#[derive(Args)]
+pub struct EntriesArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
 }
