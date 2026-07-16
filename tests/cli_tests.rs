@@ -1164,6 +1164,23 @@ fn test_rename_field() {
 }
 
 #[test]
+fn test_unique_field() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":"a"},{"x":"b"},{"x":"a"}]"#).unwrap();
+
+    datakit()
+        .arg("unique")
+        .arg(&file)
+        .arg("--field")
+        .arg("x")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("a"))
+        .stdout(predicate::str::contains("b"));
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

@@ -14,6 +14,7 @@ mod rename;
 mod select;
 mod sort;
 mod stats;
+mod unique;
 mod validate;
 
 fn main() {
@@ -38,5 +39,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Sort(args) => sort::run(args),
         cli::Command::Count(args) => count::run(args),
         cli::Command::Rename(args) => rename::run(args),
+        cli::Command::Unique(args) => unique::run(args),
     }
 }

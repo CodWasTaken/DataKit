@@ -33,6 +33,8 @@ pub enum Command {
     Count(CountArgs),
     /// Rename a field in records
     Rename(RenameArgs),
+    /// List unique values of a field
+    Unique(UniqueArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -160,4 +162,13 @@ pub struct RenameArgs {
     /// Field rename mapping: 'old:new'
     #[arg(short, long)]
     pub mapping: String,
+}
+
+#[derive(Args)]
+pub struct UniqueArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field to find unique values for
+    #[arg(short, long)]
+    pub field: String,
 }
