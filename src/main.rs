@@ -9,15 +9,18 @@ mod error;
 mod filter;
 mod flatten;
 mod format;
+mod head;
 mod inspect;
 mod query;
 mod rename;
+mod reverse;
 mod sample;
 mod select;
 mod shuffle;
 mod slice;
 mod sort;
 mod stats;
+mod tail;
 mod unique;
 mod validate;
 
@@ -48,5 +51,8 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Slice(args) => slice::run(args),
         cli::Command::Sample(args) => sample::run(args),
         cli::Command::Shuffle(args) => shuffle::run(args),
+        cli::Command::Head(args) => head::run(args),
+        cli::Command::Tail(args) => tail::run(args),
+        cli::Command::Reverse(args) => reverse::run(args),
     }
 }

@@ -1263,6 +1263,49 @@ fn test_shuffle_deterministic() {
 }
 
 #[test]
+fn test_head() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a","b","c","d","e"]"#).unwrap();
+
+    datakit()
+        .arg("head")
+        .arg(&file)
+        .arg("--count")
+        .arg("2")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""a""#))
+        .stdout(predicate::str::contains(r#""b""#));
+}
+
+#[test]
+fn test_tail() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a","b","c","d","e"]"#).unwrap();
+
+    datakit()
+        .arg("tail")
+        .arg(&file)
+        .arg("--count")
+        .arg("2")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""d""#))
+        .stdout(predicate::str::contains(r#""e""#));
+}
+
+#[test]
+fn test_reverse() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"["a","b","c"]"#).unwrap();
+
+    datakit().arg("reverse").arg(&file).assert().success();
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

@@ -43,6 +43,12 @@ pub enum Command {
     Sample(SampleArgs),
     /// Shuffle array records randomly
     Shuffle(ShuffleArgs),
+    /// First N records of an array
+    Head(HeadArgs),
+    /// Last N records of an array
+    Tail(TailArgs),
+    /// Reverse an array
+    Reverse(ReverseArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -221,4 +227,28 @@ pub struct ShuffleArgs {
     /// Random seed for reproducibility
     #[arg(short, long)]
     pub seed: Option<u64>,
+}
+
+#[derive(Args)]
+pub struct HeadArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Number of records to show (default 10)
+    #[arg(short, long)]
+    pub count: Option<usize>,
+}
+
+#[derive(Args)]
+pub struct TailArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Number of records to show (default 10)
+    #[arg(short, long)]
+    pub count: Option<usize>,
+}
+
+#[derive(Args)]
+pub struct ReverseArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
 }
