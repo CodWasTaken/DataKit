@@ -29,6 +29,8 @@ pub enum Command {
     Diff(DiffArgs),
     /// Sort records by a field
     Sort(SortArgs),
+    /// Count records in a data file
+    Count(CountArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -141,4 +143,10 @@ pub struct SortArgs {
     /// Sort in descending order
     #[arg(short, long)]
     pub desc: bool,
+}
+
+#[derive(Args)]
+pub struct CountArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
 }

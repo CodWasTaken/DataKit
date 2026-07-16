@@ -1119,6 +1119,34 @@ fn test_sort_desc() {
 }
 
 #[test]
+fn test_count_array() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[1,2,3,4,5]"#).unwrap();
+
+    datakit()
+        .arg("count")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout("5\n");
+}
+
+#[test]
+fn test_count_object() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1}"#).unwrap();
+
+    datakit()
+        .arg("count")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout("1\n");
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

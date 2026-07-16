@@ -3,6 +3,7 @@ use clap::Parser;
 mod cli;
 mod completions;
 mod convert;
+mod count;
 mod diff;
 mod error;
 mod filter;
@@ -34,5 +35,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Select(args) => select::run(args),
         cli::Command::Diff(args) => diff::run(args),
         cli::Command::Sort(args) => sort::run(args),
+        cli::Command::Count(args) => count::run(args),
     }
 }
