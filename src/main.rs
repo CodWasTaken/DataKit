@@ -1,6 +1,7 @@
 use clap::Parser;
 
 mod atomic;
+mod check;
 mod cli;
 mod completions;
 mod convert;
@@ -21,6 +22,7 @@ mod inspect;
 mod keys;
 mod merge;
 mod pick;
+mod pretty;
 mod query;
 mod rename;
 mod reverse;
@@ -79,5 +81,7 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Round(args) => round::run(args),
         cli::Command::Hash(args) => hash::run(args),
         cli::Command::Encode(args) => encode::run(args),
+        cli::Command::Pretty(args) => pretty::run(args),
+        cli::Command::Check(args) => check::run(args),
     }
 }

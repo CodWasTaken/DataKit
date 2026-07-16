@@ -73,6 +73,10 @@ pub enum Command {
     Hash(HashArgs),
     /// Encode data as base64 or hex
     Encode(EncodeArgs),
+    /// Pretty-print formatted JSON output
+    Pretty(PrettyArgs),
+    /// Check if a file is valid
+    Check(CheckArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -375,4 +379,19 @@ pub struct EncodeArgs {
     /// Encoding algorithm (base64, hex)
     #[arg(short, long)]
     pub algorithm: Option<String>,
+}
+
+#[derive(Args)]
+pub struct PrettyArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Indent width (default 2, 0 = minified)
+    #[arg(short, long)]
+    pub indent: Option<usize>,
+}
+
+#[derive(Args)]
+pub struct CheckArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
 }

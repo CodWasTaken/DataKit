@@ -1488,3 +1488,43 @@ fn test_encode_hex() {
         .assert()
         .success();
 }
+
+#[test]
+fn test_pretty() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"a":1,"b":2}"#).unwrap();
+    datakit()
+        .arg("pretty")
+        .arg(&file)
+        .arg("--indent")
+        .arg("4")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_check_valid() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"ok":true}"#).unwrap();
+    datakit()
+        .arg("check")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("valid"));
+}
+
+#[test]
+fn test_check_invalid() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"not json"#).unwrap();
+    datakit()
+        .arg("check")
+        .arg(&file)
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid"));
+}
