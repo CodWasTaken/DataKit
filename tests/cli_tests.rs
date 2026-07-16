@@ -897,3 +897,49 @@ fn test_completions_help() {
         .success()
         .stdout(predicate::str::contains("Shell to generate"));
 }
+
+#[test]
+fn test_stats_numeric() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"x":1},{"x":2},{"x":3},{"x":4},{"x":5}]"#).unwrap();
+
+    datakit()
+        .arg("stats")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("count: 5"))
+        .stdout(predicate::str::contains("min:   1"))
+        .stdout(predicate::str::contains("max:   5"))
+        .stdout(predicate::str::contains("mean:  3.0000"))
+        .stdout(predicate::str::contains("median: 3.0000"));
+}
+
+#[test]
+fn test_stats_empty() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("empty.json");
+    std::fs::write(&file, "[]").unwrap();
+
+    datakit()
+        .arg("stats")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("no records"));
+}
+
+#[test]
+fn test_stats_non_numeric() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"[{"name":"Alice"},{"name":"Bob"}]"#).unwrap();
+
+    datakit()
+        .arg("stats")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("non-numeric"));
+}

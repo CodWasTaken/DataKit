@@ -7,6 +7,7 @@ mod error;
 mod format;
 mod inspect;
 mod query;
+mod stats;
 mod validate;
 
 fn main() {
@@ -24,5 +25,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Validate(args) => validate::run(args),
         cli::Command::Query(args) => query::run(args),
         cli::Command::Completions(args) => completions::run(args.shell.into()),
+        cli::Command::Stats(args) => stats::run(args),
     }
 }

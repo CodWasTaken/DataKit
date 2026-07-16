@@ -19,6 +19,8 @@ pub enum Command {
     Query(QueryArgs),
     /// Generate shell completions
     Completions(CompletionsArgs),
+    /// Compute summary statistics for numeric fields
+    Stats(StatsArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -81,4 +83,10 @@ pub struct QueryArgs {
 pub struct CompletionsArgs {
     /// Shell to generate completions for
     pub shell: ShellVariant,
+}
+
+#[derive(Args)]
+pub struct StatsArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
 }
