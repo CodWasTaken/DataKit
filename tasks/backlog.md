@@ -2,7 +2,6 @@
 
 | ID | Priority | Title | Type |
 |----|----------|-------|------|
-| TB-005 | medium | Add TOML format support | feat |
 | TB-006 | medium | Add YAML format support | feat |
 | TB-007 | medium | Add `--indent` option to convert command | feat |
 | TB-008 | low | Add shell completion generation | feat |

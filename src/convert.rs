@@ -45,6 +45,15 @@ pub(crate) fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error
             };
             Ok(Value::Array(records))
         }
+        format::Format::Toml => {
+            let value = if path == "-" {
+                format::toml::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::toml::read(file)?
+            };
+            Ok(value)
+        }
     }
 }
 
@@ -86,6 +95,14 @@ fn write_output(value: &Value, path: Option<&str>, fmt: format::Format) -> Resul
             let content = || -> Result<Vec<u8>, Error> {
                 let mut buf = Vec::new();
                 format::csv::write(&mut buf, &records)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
+        }
+        format::Format::Toml => {
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::toml::write(&mut buf, value)?;
                 Ok(buf)
             };
             write_bytes(content()?, path)

@@ -15,7 +15,7 @@ A production-quality command-line toolkit for inspecting, converting, validating
 | JSON    | ✓    | ✓     |
 | JSONL   | ✓    | ✓     |
 | CSV     | ✓    | ✓     |
-| TOML    | —    | —     |
+| TOML    | ✓    | ✓     |
 | YAML    | —    | —     |
 
 ## Getting Started
@@ -65,6 +65,15 @@ datakit validate data.json --schema schema.json
 # Query a field from data
 datakit query data.json --path "user.name"
 datakit query data.json --path "items[0].id"
+
+# Convert a TOML file to JSON
+datakit convert config.toml config.json
+
+# Convert JSON to TOML
+datakit convert data.json data.toml
+
+# Inspect a TOML file
+datakit inspect config.toml
 
 # Convert from stdin to stdout
 echo '{"hello":"world"}' | datakit convert -

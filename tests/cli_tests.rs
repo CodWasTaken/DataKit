@@ -664,3 +664,82 @@ fn test_query_help() {
         .success()
         .stdout(predicate::str::contains("Query a field path"));
 }
+
+#[test]
+fn test_inspect_toml_file() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("config.toml");
+    std::fs::write(
+        &file,
+        "title = \"MyApp\"\n[server]\nhost = \"localhost\"\nport = 8080\n",
+    )
+    .unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("title: string"))
+        .stdout(predicate::str::contains("server"))
+        .stdout(predicate::str::contains("host: string"))
+        .stdout(predicate::str::contains("port: number"));
+}
+
+#[test]
+fn test_convert_toml_to_json() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("config.toml");
+    let output = dir.path().join("config.json");
+    std::fs::write(&input, "name = \"test\"\nvalue = 42\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(parsed, serde_json::json!({"name": "test", "value": 42}));
+}
+
+#[test]
+fn test_convert_json_to_toml() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.toml");
+    std::fs::write(&input, r#"{"title":"MyApp","version":1}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("title"));
+    assert!(result.contains("MyApp"));
+    assert!(result.contains("version"));
+}
+
+#[test]
+fn test_convert_toml_to_toml_roundtrip() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("input.toml");
+    let output = dir.path().join("output.toml");
+    std::fs::write(&input, "name = \"Alice\"\nscore = 95.5\nactive = true\n").unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("Alice"));
+    assert!(result.contains("95.5"));
+}

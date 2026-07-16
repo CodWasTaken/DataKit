@@ -16,7 +16,7 @@
 
 - [x] JSON Lines (.jsonl) support
 - [x] CSV support
-- [ ] TOML support
+- [x] TOML support
 - [ ] YAML support
 - [ ] Format auto-detection from extension
 

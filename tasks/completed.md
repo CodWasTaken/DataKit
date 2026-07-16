@@ -1,10 +1,24 @@
 # Completed tasks
 
-## TC-005 — Add query command for field path extraction
+## TC-006 — Add TOML format support
 
 **Completed:** 2026-07-16
 
 **Commit:** (pending)
+
+**Deliverables:**
+- TOML reader via `toml` crate (parses to `serde_json::Value`)
+- TOML writer (requires top-level object)
+- TOML detect_format via `.toml` extension
+- TOML integration in inspect and convert
+- 4 new integration tests (44 total, all passing)
+- `toml` crate dependency
+
+## TC-005 — Add query command for field path extraction
+
+**Completed:** 2026-07-16
+
+**Commit:** ebe62d3
 
 **Deliverables:**
 - New `query` subcommand with `--path` option
