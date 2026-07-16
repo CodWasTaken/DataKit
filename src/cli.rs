@@ -25,6 +25,8 @@ pub enum Command {
     Filter(FilterArgs),
     /// Select specific fields from data
     Select(SelectArgs),
+    /// Show differences between two data files
+    Diff(DiffArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -111,4 +113,12 @@ pub struct SelectArgs {
     /// Comma-separated field names to include
     #[arg(short, long)]
     pub fields: String,
+}
+
+#[derive(Args)]
+pub struct DiffArgs {
+    /// First file to compare
+    pub file_a: String,
+    /// Second file to compare
+    pub file_b: String,
 }

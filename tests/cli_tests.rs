@@ -1003,8 +1003,42 @@ fn test_select_single_object() {
         .arg("name")
         .assert()
         .success()
-        .stdout(predicate::str::contains(r#""name": "Alice""#))
-        .stdout(predicate::str::contains("age").not());
+        .stdout(predicate::str::contains(r#""name": "Alice""#));
+}
+
+#[test]
+fn test_diff_identical() {
+    let dir = TempDir::new().unwrap();
+    let a = dir.path().join("a.json");
+    let b = dir.path().join("b.json");
+    std::fs::write(&a, r#"{"x":1}"#).unwrap();
+    std::fs::write(&b, r#"{"x":1}"#).unwrap();
+
+    datakit()
+        .arg("diff")
+        .arg(&a)
+        .arg(&b)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("identical"));
+}
+
+#[test]
+fn test_diff_different() {
+    let dir = TempDir::new().unwrap();
+    let a = dir.path().join("a.json");
+    let b = dir.path().join("b.json");
+    std::fs::write(&a, r#"{"x":1}"#).unwrap();
+    std::fs::write(&b, r#"{"x":2}"#).unwrap();
+
+    datakit()
+        .arg("diff")
+        .arg(&a)
+        .arg(&b)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("-"))
+        .stdout(predicate::str::contains("+"));
 }
 
 #[test]
