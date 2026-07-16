@@ -23,6 +23,8 @@ pub enum Command {
     Stats(StatsArgs),
     /// Filter records by a condition
     Filter(FilterArgs),
+    /// Select specific fields from data
+    Select(SelectArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -100,4 +102,13 @@ pub struct FilterArgs {
     /// Filter condition: 'field op value' (e.g. 'age > 30')
     #[arg(short, long)]
     pub condition: String,
+}
+
+#[derive(Args)]
+pub struct SelectArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Comma-separated field names to include
+    #[arg(short, long)]
+    pub fields: String,
 }

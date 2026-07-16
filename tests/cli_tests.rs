@@ -970,6 +970,44 @@ fn test_filter_no_match() {
 }
 
 #[test]
+fn test_select_fields() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(
+        &file,
+        r#"[{"a":1,"b":"x","c":true},{"a":2,"b":"y","c":false}]"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("select")
+        .arg(&file)
+        .arg("--fields")
+        .arg("a,b")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""a": 1"#))
+        .stdout(predicate::str::contains(r#""b": "x""#));
+}
+
+#[test]
+fn test_select_single_object() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"name":"Alice","age":30,"active":true}"#).unwrap();
+
+    datakit()
+        .arg("select")
+        .arg(&file)
+        .arg("--fields")
+        .arg("name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""name": "Alice""#))
+        .stdout(predicate::str::contains("age").not());
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

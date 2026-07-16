@@ -8,6 +8,7 @@ mod filter;
 mod format;
 mod inspect;
 mod query;
+mod select;
 mod stats;
 mod validate;
 
@@ -28,5 +29,6 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Completions(args) => completions::run(args.shell.into()),
         cli::Command::Stats(args) => stats::run(args),
         cli::Command::Filter(args) => filter::run(args),
+        cli::Command::Select(args) => select::run(args),
     }
 }
