@@ -8,6 +8,7 @@ license = "MIT"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
 csv = "1"
 jsonschema = "0.40"
 serde = { version = "1", features = ["derive"] }

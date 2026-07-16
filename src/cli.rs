@@ -1,4 +1,4 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(name = "datakit", about = "Toolkit for structured data")]
@@ -17,6 +17,29 @@ pub enum Command {
     Validate(ValidateArgs),
     /// Query a field path from data
     Query(QueryArgs),
+    /// Generate shell completions
+    Completions(CompletionsArgs),
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+pub enum ShellVariant {
+    Bash,
+    Elvish,
+    Fish,
+    PowerShell,
+    Zsh,
+}
+
+impl From<ShellVariant> for clap_complete::Shell {
+    fn from(v: ShellVariant) -> Self {
+        match v {
+            ShellVariant::Bash => clap_complete::Shell::Bash,
+            ShellVariant::Elvish => clap_complete::Shell::Elvish,
+            ShellVariant::Fish => clap_complete::Shell::Fish,
+            ShellVariant::PowerShell => clap_complete::Shell::PowerShell,
+            ShellVariant::Zsh => clap_complete::Shell::Zsh,
+        }
+    }
 }
 
 #[derive(Args)]
@@ -52,4 +75,10 @@ pub struct QueryArgs {
     /// Dot-separated field path (e.g. "user.name", "items[0].id")
     #[arg(short, long)]
     pub path: String,
+}
+
+#[derive(Args)]
+pub struct CompletionsArgs {
+    /// Shell to generate completions for
+    pub shell: ShellVariant,
 }

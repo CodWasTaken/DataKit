@@ -857,3 +857,43 @@ fn test_convert_indent_0_minified() {
     let result = std::fs::read_to_string(&output).unwrap();
     assert_eq!(result.trim(), r#"{"a":1,"b":2}"#);
 }
+
+#[test]
+fn test_completions_bash() {
+    datakit()
+        .arg("completions")
+        .arg("bash")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("_datakit"));
+}
+
+#[test]
+fn test_completions_zsh() {
+    datakit()
+        .arg("completions")
+        .arg("zsh")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("#compdef"));
+}
+
+#[test]
+fn test_completions_fish() {
+    datakit()
+        .arg("completions")
+        .arg("fish")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("complete"));
+}
+
+#[test]
+fn test_completions_help() {
+    datakit()
+        .arg("completions")
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Shell to generate"));
+}
