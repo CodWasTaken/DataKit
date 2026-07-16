@@ -21,7 +21,7 @@ pub fn run(args: ConvertArgs) -> Result<(), Error> {
     Ok(())
 }
 
-fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error> {
+pub(crate) fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error> {
     match fmt {
         format::Format::Json => {
             let text = read_all(path)?;

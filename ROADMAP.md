@@ -7,7 +7,7 @@
 - [x] JSON input support
 - [x] `inspect` command — print schema summary
 - [x] `convert` command — pretty-print or minify JSON
-- [ ] `validate` command — validate JSON against a schema
+- [x] `validate` command — validate JSON against a schema
 - [ ] `query` command — filter and extract values
 - [ ] Support reading from stdin
 - [ ] Support writing to stdout

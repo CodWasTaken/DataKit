@@ -1,10 +1,25 @@
 # Completed tasks
 
-## TC-003 — Add CSV format support
+## TC-004 — Add JSON Schema validation command
 
 **Completed:** 2026-07-16
 
 **Commit:** (pending)
+
+**Deliverables:**
+- New `validate` subcommand with `--schema` flag
+- Uses `jsonschema` crate for JSON Schema Draft validation
+- Reads data in any supported format (JSON, JSONL, CSV)
+- Reports all validation errors with instance paths
+- Exit code 1 on validation failure
+- 4 new integration tests (34 total, all passing)
+- `jsonschema` crate dependency
+
+## TC-003 — Add CSV format support
+
+**Completed:** 2026-07-16
+
+**Commit:** b7d58de
 
 **Deliverables:**
 - CSV reader with header-based object mapping

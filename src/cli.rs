@@ -13,6 +13,8 @@ pub enum Command {
     Inspect(InspectArgs),
     /// Convert data between formats
     Convert(ConvertArgs),
+    /// Validate data against a JSON Schema
+    Validate(ValidateArgs),
 }
 
 #[derive(Args)]
@@ -27,4 +29,13 @@ pub struct ConvertArgs {
     pub input: String,
     /// Path to the output file (writes to stdout if omitted)
     pub output: Option<String>,
+}
+
+#[derive(Args)]
+pub struct ValidateArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Path to the JSON Schema file
+    #[arg(short, long)]
+    pub schema: String,
 }

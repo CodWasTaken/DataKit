@@ -59,6 +59,9 @@ datakit convert data.json data.csv
 # Inspect a CSV file
 datakit inspect data.csv
 
+# Validate data against a JSON Schema
+datakit validate data.json --schema schema.json
+
 # Convert from stdin to stdout
 echo '{"hello":"world"}' | datakit convert -
 ```

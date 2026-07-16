@@ -501,3 +501,76 @@ fn test_convert_help() {
         .success()
         .stdout(predicate::str::contains("Convert data"));
 }
+
+#[test]
+fn test_validate_json_valid() {
+    let dir = TempDir::new().unwrap();
+    let schema = dir.path().join("schema.json");
+    let data = dir.path().join("data.json");
+    std::fs::write(
+        &schema,
+        r#"{"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}"#,
+    )
+    .unwrap();
+    std::fs::write(&data, r#"{"name": "Alice"}"#).unwrap();
+
+    datakit()
+        .arg("validate")
+        .arg(&data)
+        .arg("--schema")
+        .arg(&schema)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("valid"));
+}
+
+#[test]
+fn test_validate_json_invalid() {
+    let dir = TempDir::new().unwrap();
+    let schema = dir.path().join("schema.json");
+    let data = dir.path().join("data.json");
+    std::fs::write(
+        &schema,
+        r#"{"type": "object", "properties": {"name": {"type": "string"}}, "required": ["name"]}"#,
+    )
+    .unwrap();
+    std::fs::write(&data, r#"{"age": 30}"#).unwrap();
+
+    datakit()
+        .arg("validate")
+        .arg(&data)
+        .arg("--schema")
+        .arg(&schema)
+        .assert()
+        .failure()
+        .stdout(predicate::str::contains("invalid"))
+        .stdout(predicate::str::contains("name"));
+}
+
+#[test]
+fn test_validate_invalid_schema_file() {
+    let dir = TempDir::new().unwrap();
+    let schema = dir.path().join("schema.json");
+    let data = dir.path().join("data.json");
+    std::fs::write(&schema, r#"not valid json"#).unwrap();
+    std::fs::write(&data, r#"{}"#).unwrap();
+
+    datakit()
+        .arg("validate")
+        .arg(&data)
+        .arg("--schema")
+        .arg(&schema)
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid JSON Schema file"));
+}
+
+#[test]
+fn test_validate_help() {
+    datakit()
+        .arg("validate")
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("Validate data"));
+}

@@ -17,6 +17,7 @@ src/
   error.rs     — Structured error types
   inspect.rs   — Inspect command: schema summary
   convert.rs   — Convert command: format transformation
+  validate.rs  — Validate command: JSON Schema validation
   format/
     mod.rs     — Format detection, Format enum
     jsonl.rs   — JSON Lines reader/writer
