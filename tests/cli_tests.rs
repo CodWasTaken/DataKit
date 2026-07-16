@@ -197,6 +197,154 @@ fn test_inspect_invalid_json() {
 }
 
 #[test]
+fn test_inspect_jsonl_file() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.jsonl");
+    std::fs::write(
+        &file,
+        r#"{"id":1,"name":"Alice"}
+{"id":2,"name":"Bob"}
+{"id":3,"name":"Charlie"}
+"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("jsonl records: 3"))
+        .stdout(predicate::str::contains("id: number"))
+        .stdout(predicate::str::contains("name: string"));
+}
+
+#[test]
+fn test_inspect_jsonl_empty() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("empty.jsonl");
+    std::fs::write(&file, "").unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("jsonl records: 0"));
+}
+
+#[test]
+fn test_convert_jsonl_to_json() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.jsonl");
+    let output = dir.path().join("data.json");
+    std::fs::write(
+        &input,
+        r#"{"x":1}
+{"x":2}
+{"x":3}
+"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+    assert_eq!(parsed, serde_json::json!([{"x": 1}, {"x": 2}, {"x": 3}]));
+}
+
+#[test]
+fn test_convert_json_to_jsonl() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.jsonl");
+    std::fs::write(&input, r#"[{"a":1},{"a":2}]"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let lines: Vec<&str> = result.lines().collect();
+    assert_eq!(lines.len(), 2);
+    assert_eq!(lines[0], r#"{"a":1}"#);
+    assert_eq!(lines[1], r#"{"a":2}"#);
+}
+
+#[test]
+fn test_convert_jsonl_to_jsonl() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("input.jsonl");
+    let output = dir.path().join("output.jsonl");
+    std::fs::write(
+        &input,
+        r#"{"v":10}
+{"v":20}
+"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    let lines: Vec<&str> = result.lines().collect();
+    assert_eq!(lines.len(), 2);
+    assert_eq!(lines[0], r#"{"v":10}"#);
+    assert_eq!(lines[1], r#"{"v":20}"#);
+}
+
+#[test]
+fn test_convert_json_to_jsonl_non_array() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.jsonl");
+    std::fs::write(&input, r#"{"not":"an array"}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("requires a top-level array"));
+}
+
+#[test]
+fn test_inspect_jsonl_invalid_line() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("bad.jsonl");
+    std::fs::write(
+        &file,
+        r#"{"valid": true}
+invalid json
+{"also": "valid"}
+"#,
+    )
+    .unwrap();
+
+    datakit()
+        .arg("inspect")
+        .arg(&file)
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("JSONL line 2"));
+}
+
+#[test]
 fn test_help_available() {
     datakit()
         .arg("--help")

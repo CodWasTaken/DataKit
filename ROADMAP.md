@@ -14,7 +14,7 @@
 
 ## Phase 2 — Additional formats
 
-- [ ] JSON Lines (.jsonl) support
+- [x] JSON Lines (.jsonl) support
 - [ ] CSV support
 - [ ] TOML support
 - [ ] YAML support

@@ -3,6 +3,7 @@ use clap::Parser;
 mod cli;
 mod convert;
 mod error;
+mod format;
 mod inspect;
 
 fn main() -> Result<(), error::Error> {

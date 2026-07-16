@@ -12,12 +12,14 @@ The shared internal representation is `serde_json::Value` — a recursive tree o
 
 ```
 src/
-  main.rs    — Entry point, command dispatch
-  cli.rs     — Clap CLI argument definitions
-  error.rs   — Structured error types
-  inspect.rs — Inspect command: schema summary
-  convert.rs — Convert command: format transformation
-  format/    — Format-specific parsers/serializers (future)
+  main.rs      — Entry point, command dispatch
+  cli.rs       — Clap CLI argument definitions
+  error.rs     — Structured error types
+  inspect.rs   — Inspect command: schema summary
+  convert.rs   — Convert command: format transformation
+  format/
+    mod.rs     — Format detection, Format enum
+    jsonl.rs   — JSON Lines reader/writer
 ```
 
 ## CLI design

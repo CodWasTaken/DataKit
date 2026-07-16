@@ -13,7 +13,7 @@ A production-quality command-line toolkit for inspecting, converting, validating
 | Format  | Read | Write |
 |---------|------|-------|
 | JSON    | ✓    | ✓     |
-| JSONL   | —    | —     |
+| JSONL   | ✓    | ✓     |
 | CSV     | —    | —     |
 | TOML    | —    | —     |
 | YAML    | —    | —     |
@@ -38,8 +38,17 @@ cargo build --release
 # Inspect a JSON file's structure
 datakit inspect data.json
 
+# Inspect a JSON Lines file
+datakit inspect data.jsonl
+
 # Convert a JSON file (pretty-print)
 datakit convert input.json output.json
+
+# Convert JSONL to JSON array
+datakit convert data.jsonl data.json
+
+# Convert JSON array to JSONL
+datakit convert data.json data.jsonl
 
 # Convert from stdin to stdout
 echo '{"hello":"world"}' | datakit convert -

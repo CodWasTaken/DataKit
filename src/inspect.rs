@@ -7,8 +7,34 @@ use serde_json::Value;
 
 use crate::cli::InspectArgs;
 use crate::error::Error;
+use crate::format;
 
 pub fn run(args: InspectArgs) -> Result<(), Error> {
+    let is_jsonl = args
+        .path
+        .as_deref()
+        .map(format::detect_format)
+        .map(|f| f == format::Format::Jsonl)
+        .unwrap_or(false);
+
+    if is_jsonl {
+        let source: Box<dyn Read> = match args.path {
+            Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
+            None => Box::new(std::io::stdin()),
+        };
+        let records = format::jsonl::read(source)?;
+        let count = records.len();
+        println!("jsonl records: {count}");
+        if let Some(first) = records.first() {
+            let info = describe_value(first, 0);
+            println!("record schema:");
+            for line in info.lines() {
+                println!("  {line}");
+            }
+        }
+        return Ok(());
+    }
+
     let source: Box<dyn Read> = match args.path {
         Some(ref p) => Box::new(File::open(p).map_err(|_| Error::FileNotFound(p.into()))?),
         None => Box::new(std::io::stdin()),
