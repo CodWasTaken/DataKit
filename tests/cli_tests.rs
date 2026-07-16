@@ -1147,6 +1147,23 @@ fn test_count_object() {
 }
 
 #[test]
+fn test_rename_field() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.json");
+    std::fs::write(&file, r#"{"old_name":"Alice"}"#).unwrap();
+
+    datakit()
+        .arg("rename")
+        .arg(&file)
+        .arg("--mapping")
+        .arg("old_name:new_name")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("new_name"))
+        .stdout(predicate::str::contains("old_name").not());
+}
+
+#[test]
 fn test_stats_empty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("empty.json");

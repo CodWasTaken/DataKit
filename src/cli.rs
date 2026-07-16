@@ -31,6 +31,8 @@ pub enum Command {
     Sort(SortArgs),
     /// Count records in a data file
     Count(CountArgs),
+    /// Rename a field in records
+    Rename(RenameArgs),
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -149,4 +151,13 @@ pub struct SortArgs {
 pub struct CountArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct RenameArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field rename mapping: 'old:new'
+    #[arg(short, long)]
+    pub mapping: String,
 }
