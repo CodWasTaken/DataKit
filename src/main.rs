@@ -1,6 +1,7 @@
 use clap::Parser;
 
 mod atomic;
+mod base64;
 mod check;
 mod cli;
 mod completions;
@@ -8,7 +9,6 @@ mod convert;
 mod count;
 mod dedup;
 mod diff;
-mod encode;
 mod entries;
 mod error;
 mod explode;
@@ -18,6 +18,7 @@ mod flatten;
 mod format;
 mod hash;
 mod head;
+mod hex;
 mod inspect;
 mod keys;
 mod length;
@@ -82,7 +83,8 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Values(args) => values::run(args),
         cli::Command::Round(args) => round::run(args),
         cli::Command::Hash(args) => hash::run(args),
-        cli::Command::Encode(args) => encode::run(args),
+        cli::Command::Base64(args) => base64::run(args),
+        cli::Command::Hex(args) => hex::run(args),
         cli::Command::Pretty(args) => pretty::run(args),
         cli::Command::Check(args) => check::run(args),
         cli::Command::Search(args) => search::run(args),

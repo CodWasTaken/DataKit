@@ -1462,31 +1462,53 @@ fn test_hash_md5() {
 }
 
 #[test]
-fn test_encode_base64() {
+fn test_base64_encode() {
     let dir = TempDir::new().unwrap();
-    let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"{"a":1}"#).unwrap();
+    let file = dir.path().join("data.txt");
+    std::fs::write(&file, b"hello").unwrap();
     datakit()
-        .arg("encode")
-        .arg(&file)
-        .arg("--algorithm")
         .arg("base64")
+        .arg(&file)
         .assert()
-        .success();
+        .success()
+        .stdout(predicate::str::contains("aGVsbG8="));
 }
 
 #[test]
-fn test_encode_hex() {
-    let dir = TempDir::new().unwrap();
-    let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"{"b":2}"#).unwrap();
+fn test_base64_decode() {
     datakit()
-        .arg("encode")
-        .arg(&file)
-        .arg("--algorithm")
-        .arg("hex")
+        .arg("base64")
+        .arg("-")
+        .arg("--decode")
+        .write_stdin("aGVsbG8=")
         .assert()
-        .success();
+        .success()
+        .stdout("hello");
+}
+
+#[test]
+fn test_hex_encode() {
+    let dir = TempDir::new().unwrap();
+    let file = dir.path().join("data.txt");
+    std::fs::write(&file, b"hello").unwrap();
+    datakit()
+        .arg("hex")
+        .arg(&file)
+        .assert()
+        .success()
+        .stdout("68656c6c6f\n");
+}
+
+#[test]
+fn test_hex_decode() {
+    datakit()
+        .arg("hex")
+        .arg("-")
+        .arg("--decode")
+        .write_stdin("68656c6c6f")
+        .assert()
+        .success()
+        .stdout("hello");
 }
 
 #[test]

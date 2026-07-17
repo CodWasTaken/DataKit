@@ -71,8 +71,10 @@ pub enum Command {
     Round(RoundArgs),
     /// Hash data content
     Hash(HashArgs),
-    /// Encode data as base64 or hex
-    Encode(EncodeArgs),
+    /// Base64 encode or decode
+    Base64(Base64Args),
+    /// Hex encode or decode
+    Hex(HexArgs),
     /// Pretty-print formatted JSON output
     Pretty(PrettyArgs),
     /// Check if a file is valid
@@ -377,12 +379,24 @@ pub struct HashArgs {
 }
 
 #[derive(Args)]
-pub struct EncodeArgs {
+pub struct Base64Args {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
-    /// Encoding algorithm (base64, hex)
+    /// Decode instead of encode
     #[arg(short, long)]
-    pub algorithm: Option<String>,
+    pub decode: bool,
+    /// Use URL-safe alphabet
+    #[arg(short, long)]
+    pub url: bool,
+}
+
+#[derive(Args)]
+pub struct HexArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Decode instead of encode
+    #[arg(short, long)]
+    pub decode: bool,
 }
 
 #[derive(Args)]
