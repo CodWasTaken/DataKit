@@ -73,6 +73,24 @@ pub(crate) fn read_input(path: &str, fmt: format::Format) -> Result<Value, Error
             };
             Ok(value)
         }
+        format::Format::Xml => {
+            let value = if path == "-" {
+                format::xml::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::xml::read(file)?
+            };
+            Ok(value)
+        }
+        format::Format::Msgpack => {
+            let value = if path == "-" {
+                format::msgpack::read(io::stdin())?
+            } else {
+                let file = fs::File::open(path).map_err(|_| Error::FileNotFound(path.into()))?;
+                format::msgpack::read(file)?
+            };
+            Ok(value)
+        }
     }
 }
 
@@ -146,6 +164,22 @@ fn write_output(
             let content = || -> Result<Vec<u8>, Error> {
                 let mut buf = Vec::new();
                 format::yaml::write(&mut buf, value)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
+        }
+        format::Format::Xml => {
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::xml::write(&mut buf, value)?;
+                Ok(buf)
+            };
+            write_bytes(content()?, path)
+        }
+        format::Format::Msgpack => {
+            let content = || -> Result<Vec<u8>, Error> {
+                let mut buf = Vec::new();
+                format::msgpack::write(&mut buf, value)?;
                 Ok(buf)
             };
             write_bytes(content()?, path)

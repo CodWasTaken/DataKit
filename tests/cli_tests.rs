@@ -1689,3 +1689,66 @@ fn test_length_array() {
         .success()
         .stdout("3\n");
 }
+
+#[test]
+fn test_convert_xml_to_json() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.xml");
+    let output = dir.path().join("data.json");
+    std::fs::write(&input, r#"<root><item id="1">hello</item></root>"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("hello"));
+}
+
+#[test]
+fn test_convert_json_to_xml() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let output = dir.path().join("data.xml");
+    std::fs::write(&input, r#"{"root":{"item":"hello"}}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("hello"));
+}
+
+#[test]
+fn test_convert_msgpack_json_roundtrip() {
+    let dir = TempDir::new().unwrap();
+    let input = dir.path().join("data.json");
+    let mpk = dir.path().join("data.mpk");
+    std::fs::write(&input, r#"{"a":1,"b":"two"}"#).unwrap();
+
+    datakit()
+        .arg("convert")
+        .arg(&input)
+        .arg(&mpk)
+        .assert()
+        .success();
+
+    let output = dir.path().join("back.json");
+    datakit()
+        .arg("convert")
+        .arg(&mpk)
+        .arg(&output)
+        .assert()
+        .success();
+
+    let result = std::fs::read_to_string(&output).unwrap();
+    assert!(result.contains("a"));
+    assert!(result.contains("two"));
+}

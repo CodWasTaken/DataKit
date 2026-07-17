@@ -1,6 +1,8 @@
 pub mod csv;
 pub mod jsonl;
+pub mod msgpack;
 pub mod toml;
+pub mod xml;
 pub mod yaml;
 
 use std::path::Path;
@@ -12,6 +14,8 @@ pub enum Format {
     Csv,
     Toml,
     Yaml,
+    Xml,
+    Msgpack,
 }
 
 pub fn parse_format_name(name: &str) -> Result<Format, crate::error::Error> {
@@ -21,8 +25,10 @@ pub fn parse_format_name(name: &str) -> Result<Format, crate::error::Error> {
         "csv" => Ok(Format::Csv),
         "toml" => Ok(Format::Toml),
         "yaml" | "yml" => Ok(Format::Yaml),
+        "xml" => Ok(Format::Xml),
+        "msgpack" | "mpk" => Ok(Format::Msgpack),
         _ => Err(crate::error::Error::Message(format!(
-            "unknown format '{name}' (supported: json, jsonl, csv, toml, yaml)"
+            "unknown format '{name}' (supported: json, jsonl, csv, toml, yaml, xml, msgpack)"
         ))),
     }
 }
@@ -34,6 +40,8 @@ pub fn detect_format(path: &str) -> Format {
         Some("csv") => Format::Csv,
         Some("toml") => Format::Toml,
         Some("yaml" | "yml") => Format::Yaml,
+        Some("xml") => Format::Xml,
+        Some("msgpack" | "mpk") => Format::Msgpack,
         _ => Format::Json,
     }
 }
