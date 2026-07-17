@@ -1484,6 +1484,30 @@ fn test_hash_sha512() {
 }
 
 #[test]
+fn test_hash_blake3() {
+    datakit()
+        .arg("hash")
+        .arg("-")
+        .arg("--algorithm")
+        .arg("blake3")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_hash_sha3() {
+    datakit()
+        .arg("hash")
+        .arg("-")
+        .arg("--algorithm")
+        .arg("sha3-256")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_base64_encode() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.txt");

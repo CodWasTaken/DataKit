@@ -379,7 +379,7 @@ pub struct RoundArgs {
 pub struct HashArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
-    /// Hash algorithm (sha256, sha512, md5)
+    /// Hash algorithm (sha256, sha512, sha3-256, blake3, md5)
     #[arg(short, long)]
     pub algorithm: Option<String>,
 }
