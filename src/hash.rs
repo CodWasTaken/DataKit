@@ -1,22 +1,24 @@
-use md5::{Digest, Md5};
+use sha2::{Digest, Sha256, Sha512};
 
 use crate::cli::HashArgs;
 use crate::error::Error;
-use crate::format;
 
 pub fn run(args: HashArgs) -> Result<(), Error> {
-    let input_fmt = format::detect_format(&args.data);
-    let value = crate::convert::read_input(&args.data, input_fmt)?;
+    let algorithm = args.algorithm.as_deref().unwrap_or("sha256");
+    let input = args.data.as_bytes();
 
-    let json = serde_json::to_string(&value)
-        .map_err(|e| Error::Message(format!("serialization error: {e}")))?;
-
-    let hash = format!("{:x}", Md5::digest(json.as_bytes()));
-
-    match args.algorithm.as_deref().unwrap_or("md5") {
-        "md5" => println!("{hash}"),
+    let hash = match algorithm {
+        "md5" => {
+            eprintln!(
+                "warning: MD5 is insecure and should not be used for security-sensitive workflows"
+            );
+            format!("{:x}", md5::Md5::digest(input))
+        }
+        "sha256" => format!("{:x}", Sha256::digest(input)),
+        "sha512" => format!("{:x}", Sha512::digest(input)),
         other => return Err(Error::Message(format!("unknown hash algorithm '{other}'"))),
-    }
+    };
 
+    println!("{hash}");
     Ok(())
 }

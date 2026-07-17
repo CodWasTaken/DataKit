@@ -1449,14 +1449,36 @@ fn test_round() {
 
 #[test]
 fn test_hash_md5() {
-    let dir = TempDir::new().unwrap();
-    let file = dir.path().join("data.json");
-    std::fs::write(&file, r#"{"a":1}"#).unwrap();
     datakit()
         .arg("hash")
-        .arg(&file)
+        .arg("-")
         .arg("--algorithm")
         .arg("md5")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_hash_sha256() {
+    datakit()
+        .arg("hash")
+        .arg("-")
+        .arg("--algorithm")
+        .arg("sha256")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_hash_sha512() {
+    datakit()
+        .arg("hash")
+        .arg("-")
+        .arg("--algorithm")
+        .arg("sha512")
+        .write_stdin("hello")
         .assert()
         .success();
 }
