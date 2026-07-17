@@ -1508,6 +1508,39 @@ fn test_hash_sha3() {
 }
 
 #[test]
+fn test_hash_manifest() {
+    let dir = TempDir::new().unwrap();
+    let f = dir.path().join("test.txt");
+    std::fs::write(&f, b"hello").unwrap();
+
+    datakit()
+        .arg("hash")
+        .arg(dir.path())
+        .arg("--algorithm")
+        .arg("sha256")
+        .arg("--manifest")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_hash_check_ok() {
+    let dir = TempDir::new().unwrap();
+    let f = dir.path().join("test.txt");
+    std::fs::write(&f, b"hello").unwrap();
+    let manifest = dir.path().join("sha256sums.txt");
+    let hash = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
+    std::fs::write(&manifest, format!("{hash}  {}", f.display())).unwrap();
+
+    datakit()
+        .arg("hash")
+        .arg(&manifest)
+        .arg("--check")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_base64_encode() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.txt");
