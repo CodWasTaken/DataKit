@@ -5,12 +5,12 @@ use crate::error::Error;
 use crate::format;
 
 #[derive(Debug)]
-enum PathSegment {
+pub(crate) enum PathSegment {
     Key(String),
     Index(usize),
 }
 
-fn parse_path(path: &str) -> Result<Vec<PathSegment>, Error> {
+pub(crate) fn parse_path(path: &str) -> Result<Vec<PathSegment>, Error> {
     let mut segments = Vec::new();
     let mut current = String::new();
     let mut chars = path.chars().peekable();
