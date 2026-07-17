@@ -24,6 +24,7 @@ mod fill;
 mod filter;
 mod flatten;
 mod format;
+mod group;
 mod hash;
 mod head;
 mod hex;
@@ -32,7 +33,9 @@ mod keygen;
 mod keys;
 mod length;
 mod merge;
+mod normalize;
 mod pick;
+mod pipeline;
 mod pretty;
 mod query;
 mod rename;
@@ -48,6 +51,7 @@ mod slice;
 mod sort;
 mod stats;
 mod tail;
+mod transpose;
 mod unique;
 mod validate;
 mod values;
@@ -110,6 +114,10 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Compress(args) => compress::run(args),
         cli::Command::Decompress(args) => decompress::run(args),
         cli::Command::Archive(args) => archive::run(args),
+        cli::Command::Group(args) => group::run(args),
+        cli::Command::Transpose(args) => transpose::run(args),
+        cli::Command::Normalize(args) => normalize::run(args),
+        cli::Command::Pipeline(args) => pipeline::run(args),
         cli::Command::Search(args) => search::run(args),
         cli::Command::Length(args) => length::run(args),
     }

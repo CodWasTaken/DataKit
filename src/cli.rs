@@ -101,6 +101,14 @@ pub enum Command {
     Decompress(DecompressArgs),
     /// Archive operations (list, extract, create)
     Archive(ArchiveArgs),
+    /// Group array records by a field
+    Group(GroupArgs),
+    /// Transpose rows and columns
+    Transpose(TransposeArgs),
+    /// Normalize nested records into flat records
+    Normalize(NormalizeArgs),
+    /// Run a declarative processing pipeline
+    Pipeline(PipelineArgs),
     /// Search text in records
     Search(SearchArgs),
     /// Get length of array, string, or object
@@ -509,6 +517,39 @@ pub struct DecryptArgs {
 pub struct LengthArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct GroupArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field to group by
+    #[arg(short, long)]
+    pub by: String,
+}
+
+#[derive(Args)]
+pub struct TransposeArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+}
+
+#[derive(Args)]
+pub struct NormalizeArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Field to recurse into
+    #[arg(short, long)]
+    pub field: String,
+}
+
+#[derive(Args)]
+pub struct PipelineArgs {
+    /// Path to the pipeline YAML file
+    pub pipeline: String,
+    /// Dry-run: validate without executing
+    #[arg(short, long)]
+    pub dry_run: bool,
 }
 
 #[derive(Args)]
