@@ -10,8 +10,10 @@ mod cli;
 mod completions;
 mod convert;
 mod count;
+mod decrypt;
 mod dedup;
 mod diff;
+mod encrypt;
 mod entries;
 mod error;
 mod explode;
@@ -34,6 +36,7 @@ mod reverse;
 mod round;
 mod sample;
 mod search;
+mod secret;
 mod select;
 mod shuffle;
 mod slice;
@@ -93,6 +96,8 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Base85(args) => base85::run(args),
         cli::Command::Pretty(args) => pretty::run(args),
         cli::Command::Check(args) => check::run(args),
+        cli::Command::Encrypt(args) => encrypt::run(args),
+        cli::Command::Decrypt(args) => decrypt::run(args),
         cli::Command::Search(args) => search::run(args),
         cli::Command::Length(args) => length::run(args),
     }

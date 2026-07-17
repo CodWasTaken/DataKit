@@ -85,6 +85,10 @@ pub enum Command {
     Pretty(PrettyArgs),
     /// Check if a file is valid
     Check(CheckArgs),
+    /// Encrypt a file with a password
+    Encrypt(EncryptArgs),
+    /// Decrypt a file with a password
+    Decrypt(DecryptArgs),
     /// Search text in records
     Search(SearchArgs),
     /// Get length of array, string, or object
@@ -463,6 +467,30 @@ pub struct SearchArgs {
     /// Field to search in (optional)
     #[arg(short, long)]
     pub field: Option<String>,
+}
+
+#[derive(Args)]
+pub struct EncryptArgs {
+    /// Path to the input file
+    pub data: String,
+    /// Output file path (defaults to input.enc)
+    #[arg(short, long)]
+    pub output: Option<String>,
+    /// Read password from stdin instead of interactive prompt
+    #[arg(long)]
+    pub password_stdin: bool,
+}
+
+#[derive(Args)]
+pub struct DecryptArgs {
+    /// Path to the encrypted file
+    pub data: String,
+    /// Output file path (defaults to input without .enc)
+    #[arg(short, long)]
+    pub output: Option<String>,
+    /// Read password from stdin instead of interactive prompt
+    #[arg(long)]
+    pub password_stdin: bool,
 }
 
 #[derive(Args)]
