@@ -25,6 +25,7 @@ mod hash;
 mod head;
 mod hex;
 mod inspect;
+mod keygen;
 mod keys;
 mod length;
 mod merge;
@@ -39,6 +40,7 @@ mod search;
 mod secret;
 mod select;
 mod shuffle;
+mod sign;
 mod slice;
 mod sort;
 mod stats;
@@ -46,6 +48,7 @@ mod tail;
 mod unique;
 mod validate;
 mod values;
+mod verify;
 mod zip;
 
 fn main() {
@@ -98,6 +101,9 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Check(args) => check::run(args),
         cli::Command::Encrypt(args) => encrypt::run(args),
         cli::Command::Decrypt(args) => decrypt::run(args),
+        cli::Command::Keygen(args) => keygen::run(args),
+        cli::Command::Sign(args) => sign::run(args),
+        cli::Command::Verify(args) => verify::run(args),
         cli::Command::Search(args) => search::run(args),
         cli::Command::Length(args) => length::run(args),
     }

@@ -89,6 +89,12 @@ pub enum Command {
     Encrypt(EncryptArgs),
     /// Decrypt a file with a password
     Decrypt(DecryptArgs),
+    /// Generate an Ed25519 key pair
+    Keygen(KeygenArgs),
+    /// Sign a file with a Ed25519 secret key
+    Sign(SignArgs),
+    /// Verify a detached Ed25519 signature
+    Verify(VerifyArgs),
     /// Search text in records
     Search(SearchArgs),
     /// Get length of array, string, or object
@@ -497,4 +503,35 @@ pub struct DecryptArgs {
 pub struct LengthArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct KeygenArgs {
+    /// Output path for the secret key (public key will be output.pub)
+    #[arg(short, long, default_value = "datakit.key")]
+    pub output: String,
+}
+
+#[derive(Args)]
+pub struct SignArgs {
+    /// File to sign
+    pub data: String,
+    /// Ed25519 secret key file
+    #[arg(short, long)]
+    pub key: String,
+    /// Output path for signature (defaults to data.sig)
+    #[arg(short, long)]
+    pub output: Option<String>,
+}
+
+#[derive(Args)]
+pub struct VerifyArgs {
+    /// Signed file
+    pub data: String,
+    /// Ed25519 public key file
+    #[arg(short, long)]
+    pub key: String,
+    /// Signature file
+    #[arg(short, long)]
+    pub signature: String,
 }
