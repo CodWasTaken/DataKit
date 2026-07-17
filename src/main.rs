@@ -1,7 +1,10 @@
 use clap::Parser;
 
 mod atomic;
+mod base32;
+mod base58;
 mod base64;
+mod base85;
 mod check;
 mod cli;
 mod completions;
@@ -85,6 +88,9 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Hash(args) => hash::run(args),
         cli::Command::Base64(args) => base64::run(args),
         cli::Command::Hex(args) => hex::run(args),
+        cli::Command::Base32(args) => base32::run(args),
+        cli::Command::Base58(args) => base58::run(args),
+        cli::Command::Base85(args) => base85::run(args),
         cli::Command::Pretty(args) => pretty::run(args),
         cli::Command::Check(args) => check::run(args),
         cli::Command::Search(args) => search::run(args),

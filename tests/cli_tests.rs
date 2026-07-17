@@ -1512,6 +1512,36 @@ fn test_hex_decode() {
 }
 
 #[test]
+fn test_base32_roundtrip() {
+    datakit()
+        .arg("base32")
+        .arg("-")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_base58_roundtrip() {
+    datakit()
+        .arg("base58")
+        .arg("-")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_base85_roundtrip() {
+    datakit()
+        .arg("base85")
+        .arg("-")
+        .write_stdin("hello")
+        .assert()
+        .success();
+}
+
+#[test]
 fn test_pretty() {
     let dir = TempDir::new().unwrap();
     let file = dir.path().join("data.json");

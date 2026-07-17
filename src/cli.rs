@@ -75,6 +75,12 @@ pub enum Command {
     Base64(Base64Args),
     /// Hex encode or decode
     Hex(HexArgs),
+    /// Base32 encode or decode
+    Base32(Base32Args),
+    /// Base58 encode or decode
+    Base58(Base58Args),
+    /// Base85 encode or decode
+    Base85(Base85Args),
     /// Pretty-print formatted JSON output
     Pretty(PrettyArgs),
     /// Check if a file is valid
@@ -392,6 +398,33 @@ pub struct Base64Args {
 
 #[derive(Args)]
 pub struct HexArgs {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Decode instead of encode
+    #[arg(short, long)]
+    pub decode: bool,
+}
+
+#[derive(Args)]
+pub struct Base32Args {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Decode instead of encode
+    #[arg(short, long)]
+    pub decode: bool,
+}
+
+#[derive(Args)]
+pub struct Base58Args {
+    /// Path to the data file (use "-" for stdin)
+    pub data: String,
+    /// Decode instead of encode
+    #[arg(short, long)]
+    pub decode: bool,
+}
+
+#[derive(Args)]
+pub struct Base85Args {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
     /// Decode instead of encode
