@@ -95,6 +95,12 @@ pub enum Command {
     Sign(SignArgs),
     /// Verify a detached Ed25519 signature
     Verify(VerifyArgs),
+    /// Compress a file
+    Compress(CompressArgs),
+    /// Decompress a file
+    Decompress(DecompressArgs),
+    /// Archive operations (list, extract, create)
+    Archive(ArchiveArgs),
     /// Search text in records
     Search(SearchArgs),
     /// Get length of array, string, or object
@@ -503,6 +509,47 @@ pub struct DecryptArgs {
 pub struct LengthArgs {
     /// Path to the data file (use "-" for stdin)
     pub data: String,
+}
+
+#[derive(Args)]
+pub struct CompressArgs {
+    /// File to compress
+    pub data: String,
+    /// Compression algorithm (gzip, zstd)
+    #[arg(short, long)]
+    pub algorithm: Option<String>,
+    /// Compression level (1-9, default 6)
+    #[arg(short, long)]
+    pub level: Option<i32>,
+    /// Output file path
+    #[arg(short, long)]
+    pub output: Option<String>,
+}
+
+#[derive(Args)]
+pub struct DecompressArgs {
+    /// File to decompress
+    pub data: String,
+    /// Compression algorithm (gzip, zstd)
+    #[arg(short, long)]
+    pub algorithm: Option<String>,
+    /// Output file path
+    #[arg(short, long)]
+    pub output: Option<String>,
+}
+
+#[derive(Args)]
+pub struct ArchiveArgs {
+    /// Path to the archive file
+    pub archive: String,
+    /// Command: list, extract, create
+    #[arg(short, long)]
+    pub command: Option<String>,
+    /// Files/directories to add (for create)
+    pub paths: Vec<String>,
+    /// Output directory (for extract)
+    #[arg(short, long)]
+    pub output: Option<String>,
 }
 
 #[derive(Args)]

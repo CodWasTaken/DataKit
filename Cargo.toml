@@ -31,7 +31,12 @@ hex = "0.4"
 tempfile = "3"
 rpassword = "7"
 ed25519-dalek = "2"
+flate2 = "1"
+tar = "0.4"
 thiserror = "2"
+walkdir = "2"
+zip = "2"
+zstd = "0.13"
 toml = "0.8"
 
 [dev-dependencies]

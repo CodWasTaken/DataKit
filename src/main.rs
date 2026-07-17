@@ -1,5 +1,6 @@
 use clap::Parser;
 
+mod archive;
 mod atomic;
 mod base32;
 mod base58;
@@ -8,8 +9,10 @@ mod base85;
 mod check;
 mod cli;
 mod completions;
+mod compress;
 mod convert;
 mod count;
+mod decompress;
 mod decrypt;
 mod dedup;
 mod diff;
@@ -104,6 +107,9 @@ fn run() -> Result<(), error::Error> {
         cli::Command::Keygen(args) => keygen::run(args),
         cli::Command::Sign(args) => sign::run(args),
         cli::Command::Verify(args) => verify::run(args),
+        cli::Command::Compress(args) => compress::run(args),
+        cli::Command::Decompress(args) => decompress::run(args),
+        cli::Command::Archive(args) => archive::run(args),
         cli::Command::Search(args) => search::run(args),
         cli::Command::Length(args) => length::run(args),
     }
