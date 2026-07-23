@@ -10,7 +10,7 @@ license = "MIT"
 clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 csv = "1"
-jsonschema = "0.40"
+jsonschema = "0.48"
 md-5 = "0.10"
 argon2 = "0.5"
 blake3 = "1"
